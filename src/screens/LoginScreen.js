@@ -6,7 +6,7 @@ import { connect } from 'react-redux'
 import { getUser } from '../_redux/_actions/user'
 
 import colors from '../assets/colors'
-import configs from '../configs/host'
+import configs from '../configs/config'
 
 class LoginScreen extends Component {
   constructor() {
