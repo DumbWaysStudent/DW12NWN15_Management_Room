@@ -10,6 +10,16 @@ import Axios from 'axios'
 import config from '../configs/config'
 
 class CustomerScreen extends Component {
+  constructor() {
+    super()
+    this.state = {
+      iName: '',
+      iDentity: '',
+      iPhone: '',
+      iModalVisible: false
+    }
+  }
+  
   render() {
     return(
       <View style={styles.container}>
@@ -33,12 +43,65 @@ class CustomerScreen extends Component {
               </View>
             ))}
 
-            
           </ScrollView>
         )}
-        <TouchableOpacity style={styles.fab}>
+        <TouchableOpacity style={styles.fab} onPress={() => this._setIModalVisibility(true)}>
           <Text style={styles.fabText}>+</Text>
         </TouchableOpacity>
+
+        {/* Modal input */}
+        <Modal
+          animationType="slide"
+          transparent={false}
+          visible={this.state.iModalVisible}
+        >
+          <View style={styles.modal}>
+            <Text>Add Customer</Text>
+            <View>
+              <Text>Name*</Text>
+              <View>
+                <TextInput 
+                  placeholder="Name"
+                  onChangeText={val => this.setState({iName: val})}
+                />
+              </View>
+            </View>
+
+            <View>
+              <Text>Identity Number*</Text>
+              <View>
+                <TextInput 
+                  placeholder="Identity number"
+                  onChangeText={val => this.setState({iDentity: val})}
+                />
+              </View>
+            </View>
+
+            <View>
+              <Text>Phone Number*</Text>
+              <View>
+                <TextInput 
+                  placeholder="Phone"
+                  onChangeText={val => this.setState({iPhone: val})}
+                />
+              </View>
+            </View>
+
+            <View>
+              <Text>Phone Number*</Text>
+              <Text>*Camera Icon*</Text>
+            </View>
+
+            <View>
+              <TouchableOpacity onPress={() => this._setIModalVisibility(!this.state.iModalVisible)}>
+                <Text>Cancel</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={this._addCustomer}>
+                <Text>Save</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Modal>
       </View>
     )
   }
@@ -49,6 +112,24 @@ class CustomerScreen extends Component {
 
   _getCustomer = async () => {
     await this.props.dispatch(getCustomer(this.props.user.token))
+  }
+
+  _addCustomer = async () => {
+    const name = this.state.iName
+    const identity_number = this.state.iDentity
+    const phone = this.state.iPhone
+    try {
+      await Axios.post(config.host.concat(`customer`), {name, identity_number, phone}, {headers: {'Authorization': `Bearer ${this.props.user.token}`}}).then(() => {
+        this.props.dispatch(getCustomer(this.props.user.token))
+        this._setIModalVisibility(!this.state.iModalVisible)
+      })
+    } catch (error) {
+      alert(error)      
+    }
+  }
+
+  _setIModalVisibility = (visible) => {
+    this.setState({iModalVisible: visible})
   }
 }
 
