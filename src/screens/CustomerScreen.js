@@ -13,10 +13,12 @@ class CustomerScreen extends Component {
   constructor() {
     super()
     this.state = {
+      id: null,
       iName: '',
       iDentity: '',
       iPhone: '',
-      iModalVisible: false
+      iModalVisible: false,
+      eModalVisible: false
     }
   }
   
@@ -31,16 +33,18 @@ class CustomerScreen extends Component {
         ) : (
           <ScrollView contentContainerStyle={styles.body}>
             {this.props.customer.data.map((item) => (
-              <View key={item.id} style={styles.customerBox}>
-                <View style={styles.profile}>
-                  <Image style={styles.img} source={{uri: item.image}} />
+              <TouchableOpacity key={item.id} onPress={() => this._setEModalVisibility(true, item.id, item.name, item.identity_number, item.phone)}>
+                <View style={styles.customerBox}>
+                  <View style={styles.profile}>
+                    <Image style={styles.img} source={{uri: item.image}} />
+                  </View>
+                  <View style={styles.desc}>
+                    <Text style={styles.title}>{item.name}</Text>
+                    <Text style={styles.sub}>{item.identity_number}</Text>
+                    <Text style={styles.sub}>{item.phone}</Text>
+                  </View>
                 </View>
-                <View style={styles.desc}>
-                  <Text style={styles.title}>{item.name}</Text>
-                  <Text style={styles.sub}>{item.identity_number}</Text>
-                  <Text style={styles.sub}>{item.phone}</Text>
-                </View>
-              </View>
+              </TouchableOpacity>
             ))}
 
           </ScrollView>
@@ -102,6 +106,63 @@ class CustomerScreen extends Component {
             </View>
           </View>
         </Modal>
+
+        {/* Modal edit */}
+        <Modal
+          animationType="slide"
+          transparent={false}
+          visible={this.state.eModalVisible}
+        >
+          <View style={styles.modal}>
+            <Text>Edit Customer</Text>
+            <View>
+              <Text>Name*</Text>
+              <View>
+                <TextInput 
+                  placeholder="Name"
+                  onChangeText={val => this.setState({iName: val})}
+                  value={this.state.iName}
+                />
+              </View>
+            </View>
+
+            <View>
+              <Text>Identity Number*</Text>
+              <View>
+                <TextInput 
+                  placeholder="Identity number"
+                  onChangeText={val => this.setState({iDentity: val})}
+                  value={this.state.iDentity}
+                />
+              </View>
+            </View>
+
+            <View>
+              <Text>Phone Number*</Text>
+              <View>
+                <TextInput 
+                  placeholder="Phone"
+                  onChangeText={val => this.setState({iPhone: val})}
+                  value={this.state.iPhone}
+                />
+              </View>
+            </View>
+
+            <View>
+              <Text>Phone Number*</Text>
+              <Text>*Camera Icon*</Text>
+            </View>
+
+            <View>
+              <TouchableOpacity onPress={() => this._setEModalVisibility(!this.state.eModalVisible)}>
+                <Text>Cancel</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={this._updateCustomer}>
+                <Text>Save</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Modal>
       </View>
     )
   }
@@ -120,8 +181,23 @@ class CustomerScreen extends Component {
     const phone = this.state.iPhone
     try {
       await Axios.post(config.host.concat(`customer`), {name, identity_number, phone}, {headers: {'Authorization': `Bearer ${this.props.user.token}`}}).then(() => {
-        this.props.dispatch(getCustomer(this.props.user.token))
         this._setIModalVisibility(!this.state.iModalVisible)
+        this.props.dispatch(getCustomer(this.props.user.token))
+      })
+    } catch (error) {
+      alert(error)      
+    }
+  }
+
+  _updateCustomer = async () => {
+    const id = this.state.id
+    const name = this.state.iName
+    const identity_number = this.state.iDentity
+    const phone = this.state.iPhone
+    try {
+      await Axios.put(config.host.concat(`customer/${id}`), {name, identity_number, phone}, {headers: {'Authorization': `Bearer ${this.props.user.token}`}}).then(() => {
+        this._setEModalVisibility(!this.state.eModalVisible)
+        this.props.dispatch(getCustomer(this.props.user.token))
       })
     } catch (error) {
       alert(error)      
@@ -130,6 +206,11 @@ class CustomerScreen extends Component {
 
   _setIModalVisibility = (visible) => {
     this.setState({iModalVisible: visible})
+  }
+
+  _setEModalVisibility = (visible, id, iName, iDentity, iPhone) => {
+    this.setState({id, iName, iDentity, iPhone})
+    this.setState({eModalVisible: visible})
   }
 }
 
