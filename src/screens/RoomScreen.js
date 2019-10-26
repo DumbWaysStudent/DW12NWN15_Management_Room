@@ -13,8 +13,11 @@ class RoomScreen extends Component {
   constructor() {
     super()
     this.state = {
+      id: null,
       iName: '',
-      modalVisible: false
+      eName: '',
+      iModalVisible: false,
+      eModalVisible: false
     }
   }
   
@@ -31,11 +34,11 @@ class RoomScreen extends Component {
         ) : (
           <ScrollView contentContainerStyle={styles.body}>
             {this.props.room.data.map((item) => (
-              <TouchableOpacity key={item.id} style={styles.list}>
+              <TouchableOpacity key={item.id} style={styles.list} onPress={() => this._setEModalVisible(true, item.id, item.name)}>
                 <Text style={styles.listText}>{item.name}</Text>
               </TouchableOpacity>
             ))}
-            <TouchableOpacity onPress={() => this._setModalVisible(true)} style={styles.btn}>
+            <TouchableOpacity onPress={() => this._setIModalVisible(true)} style={styles.btn}>
               <Text>+</Text>
               <Text style={styles.btnText}>Add room</Text>
             </TouchableOpacity>
@@ -46,30 +49,33 @@ class RoomScreen extends Component {
           animationType="slide"
           transparent={false}
           presentationStyle={styles.modal}
-          visible={this.state.modalVisible}
+          visible={this.state.eModalVisible}
           onRequestClose={() => {
             Alert.alert('Modal has been closed.');
           }}>
           <View style={styles.modal}>
             <View>
-              <Text>Add Room</Text>
+              <Text>Edit Room</Text>
               <Text>Room Name</Text>
               <View>
                 <TextInput
                   onChangeText={val => this.setState({iName: val})}
                   placeholder="Room name"
+                  value={this.state.iName}
                 />
               </View>
 
-              <TouchableOpacity onPress={() => this._setModalVisible(!this.state.modalVisible)}>
+              <TouchableOpacity onPress={() => this._setEModalVisible(!this.state.eModalVisible)}>
                 <Text>Cancel</Text>                
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => this._addRoom()}>
+              <TouchableOpacity onPress={() => this._editRoom()}>
                 <Text>Save</Text>                
               </TouchableOpacity>
             </View>
           </View>
         </Modal>
+
+
       </View>
     )
   }
@@ -87,15 +93,34 @@ class RoomScreen extends Component {
     try {
       await Axios.post(config.host.concat(`room`), {name}, {headers: {'Authorization': `Bearer ${this.props.user.token}`}}).then(() => {
         this.props.dispatch(getRoom(this.props.user.token))
-        this._setModalVisible(!this.state.modalVisible)
+        this._setIModalVisible(!this.state.iModalVisible)
       })
     } catch (error) {
       alert(error)      
     }
   }
 
-  _setModalVisible = (visible) => {
-    this.setState({modalVisible: visible});
+  _editRoom = async () => {
+    const id = this.state.id
+    const name = this.state.iName
+    try {
+      await Axios.put(config.host.concat(`room/${id}`), {name}, {headers: {'Authorization': `Bearer ${this.props.user.token}`}}).then(() => {
+        this.props.dispatch(getRoom(this.props.user.token))
+        this._setEModalVisible(!this.state.eModalVisible)
+      })
+    } catch (error) {
+      alert(error)      
+    }
+  }
+
+  _setEModalVisible = (visible, id, name) => {
+    this.setState({iName: name})
+    this.setState({id})
+    this.setState({eModalVisible: visible});
+  }
+  
+  _setIModalVisible = (visible) => {
+    this.setState({iModalVisible: visible});
   }
 }
 
