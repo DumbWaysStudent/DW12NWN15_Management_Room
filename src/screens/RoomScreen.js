@@ -49,6 +49,35 @@ class RoomScreen extends Component {
           animationType="slide"
           transparent={false}
           presentationStyle={styles.modal}
+          visible={this.state.iModalVisible}
+          onRequestClose={() => {
+            Alert.alert('Modal has been closed.');
+          }}>
+          <View style={styles.modal}>
+            <View>
+              <Text>Add Room</Text>
+              <Text>Room Name</Text>
+              <View>
+                <TextInput
+                  onChangeText={val => this.setState({iName: val})}
+                  placeholder="Room name"
+                />
+              </View>
+
+              <TouchableOpacity onPress={() => this._setIModalVisible(!this.state.eModalVisible)}>
+                <Text>Cancel</Text>                
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => this._addRoom()}>
+                <Text>Save</Text>                
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Modal>
+
+        <Modal
+          animationType="slide"
+          transparent={false}
+          presentationStyle={styles.modal}
           visible={this.state.eModalVisible}
           onRequestClose={() => {
             Alert.alert('Modal has been closed.');
