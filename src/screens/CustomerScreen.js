@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Modal, Image, ScrollView, ActivityIndicator, View, StatusBar, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native'
+import { Modal, Image, ScrollView, ActivityIndicator, View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native'
 
 import { connect } from 'react-redux'
 
@@ -220,6 +220,7 @@ const styles = StyleSheet.create({
   },
 
   body: {
+    backgroundColor: colors.white,
     paddingHorizontal: 10,
     paddingVertical: 15,
   },
@@ -229,6 +230,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 20,
     marginBottom: 10,
+    backgroundColor: "#ffffff",
     borderColor: colors.primary,
     justifyContent: 'center',
     alignItems: 'center',

@@ -10,6 +10,7 @@ exports.index = (req, res) => {
       attributes: {
         exclude: ['createdAt', 'updatedAt']
       },
+      raw: true,
       include: [
         {
           model: Customer,
