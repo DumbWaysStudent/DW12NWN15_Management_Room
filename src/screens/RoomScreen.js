@@ -26,7 +26,7 @@ class RoomScreen extends Component {
     return(
       <View style={styles.container}>
         <StatusBar backgroundColor={colors.primaryDarken} />
-        <Header title="Rooms" />
+        <Header title="Room" />
         {this.props.room.isLoading === true ? (
           <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
             <ActivityIndicator size="large" color={colors.primary} />
