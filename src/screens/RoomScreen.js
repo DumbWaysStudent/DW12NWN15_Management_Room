@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { Modal, ScrollView, ActivityIndicator, View, StatusBar, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native'
+import Fa from 'react-native-vector-icons/FontAwesome'
 
 import { connect } from 'react-redux'
 
@@ -40,7 +41,7 @@ class RoomScreen extends Component {
                 </TouchableOpacity>
               ))}
               <TouchableOpacity onPress={() => this._setIModalVisible(true)} style={styles.btn}>
-                <Text>+</Text>
+                <Fa color={colors.white} name="plus" size={22} />
                 <Text style={styles.btnText}>Add room</Text>
               </TouchableOpacity>
             </View>
@@ -200,13 +201,17 @@ const styles = StyleSheet.create({
     padding: 10,
     borderWidth: 1,
     margin: 5,
-    borderColor: colors.primaryDarken,
+    borderColor: colors.primary,
     borderRadius: 4,
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
+    backgroundColor: colors.primary
   },
   btnText: {
-    fontSize: 18
+    fontSize: 14,
+    marginTop: 5,
+    textTransform: 'uppercase',
+    color: colors.white
   },
 
   modal: {

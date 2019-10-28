@@ -17,8 +17,7 @@ class CheckinScreen extends Component {
       id: null,
       iName: '',
       eName: '',
-      iModalVisible: false,
-      eModalVisible: false
+      modalVisible: false,
     }
   }
   
@@ -34,11 +33,13 @@ class CheckinScreen extends Component {
           </View>
         ) : (
           <ScrollView contentContainerStyle={styles.body}>
-            {this.props.checkin.data.map((item) => (
-              <TouchableOpacity key={item.id} style={[styles.list, item.orders.length > 0 && (item.orders[0]['is_booked'] === true ? styles.booked : styles.unBooked)]} onPress={() => this._setEModalVisible(true, item.id, item.name)}>
-                <Text style={[styles.listText, item.orders.length > 0 && styles.listTextUnbooked]}>{item.name}</Text>
-              </TouchableOpacity>
-            ))}
+            <View style={styles.listBody}>
+              {this.props.checkin.data.map((item) => (
+                <TouchableOpacity key={item.id} style={[styles.list, item.orders.length > 0 && (item.orders[0]['is_booked'] === true && styles.booked)]} onPress={() => this._setEModalVisible(true, item.id, item.name)}>
+                  <Text style={[styles.listText, item.orders.length > 0 && styles.listTextUnbooked]}>{item.name}</Text>
+                </TouchableOpacity>
+              ))}
+            </View>
           </ScrollView>
         )} 
 
@@ -46,42 +47,13 @@ class CheckinScreen extends Component {
           animationType="slide"
           transparent={false}
           presentationStyle={styles.modal}
-          visible={this.state.iModalVisible}
+          visible={this.state.modalVisible}
           onRequestClose={() => {
             Alert.alert('Modal has been closed.');
           }}>
           <View style={styles.modal}>
             <View>
-              <Text>Add Room</Text>
-              <Text>Room Name</Text>
-              <View>
-                <TextInput
-                  onChangeText={val => this.setState({iName: val})}
-                  placeholder="Room name"
-                />
-              </View>
-
-              <TouchableOpacity onPress={() => this._setIModalVisible(!this.state.eModalVisible)}>
-                <Text>Cancel</Text>                
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => this._addRoom()}>
-                <Text>Save</Text>                
-              </TouchableOpacity>
-            </View>
-          </View>
-        </Modal>
-
-        <Modal
-          animationType="slide"
-          transparent={false}
-          presentationStyle={styles.modal}
-          visible={this.state.eModalVisible}
-          onRequestClose={() => {
-            Alert.alert('Modal has been closed.');
-          }}>
-          <View style={styles.modal}>
-            <View>
-              <Text>Edit Room</Text>
+              <Text>Checkin</Text>
               <Text>Room Name</Text>
               <View>
                 <TextInput
@@ -131,12 +103,15 @@ const styles = StyleSheet.create({
     backgroundColor: colors.white,
   },
   body: {
-    flexWrap: "wrap",
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'center',
     alignItems: 'center',
     paddingVertical: 25,
-    paddingHorizontal: 15
+    paddingHorizontal: 10
+  },
+  listBody: {
+    flexWrap: 'wrap',
+    flexDirection: 'row',
+    alignItems: 'center',
   },
 
   list: {
@@ -147,25 +122,21 @@ const styles = StyleSheet.create({
     maxWidth: 93.2,
     padding: 10,
     borderWidth: 1,
-    marginVertical: 10,
-    marginHorizontal: 5,
+    margin: 10,
     borderColor: colors.primaryDarken,
     borderRadius: 4,
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
+    borderColor: colors.sub,
+    backgroundColor: colors.sub,
+    elevation: 1,
   },
   booked: {
     backgroundColor: colors.primaryDarken
   },
-  unBooked: {
-    borderColor: colors.sub,
-    backgroundColor: colors.sub
-  },
   listText: {
     fontSize: 18,
-    textAlign: 'center'
-  },
-  listTextUnbooked: {
+    textAlign: 'center',
     color: colors.white
   },
 
