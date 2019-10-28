@@ -6,7 +6,7 @@ const WeDal = (props) => (
   <Modal
     animationType="fade"
     transparent={true}
-    visible={props.visiblity}
+    visible={props.visibility}
     >
     <ScrollView contentContainerStyle={styles.modalOverlay}>
       <TouchableOpacity style={styles.modalBtnOverlay} onPress={props.onOverlayPress} />

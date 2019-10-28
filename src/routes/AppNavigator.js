@@ -9,6 +9,7 @@ import LoginScreen from '../screens/LoginScreen'
 import RoomScreen from '../screens/RoomScreen'
 import CustomerScreen from '../screens/CustomerScreen'
 import CheckinScreen from '../screens/CheckinScreen'
+import SettingScreen from '../screens/SettingScreen'
 import colors from '../assets/colors'
 
 const Auth = createStackNavigator({
@@ -18,7 +19,8 @@ const Auth = createStackNavigator({
 const App = createBottomTabNavigator({
   Checkin: { screen: CheckinScreen, navigationOptions: {title: "Checkin"} },
   Room: { screen: RoomScreen, navigationOptions: {title: "Room"} },
-  Customer: { screen: CustomerScreen, navigationOptions: {title: "Customer"} }
+  Customer: { screen: CustomerScreen, navigationOptions: {title: "Customer"} },
+  Setting: { screen: SettingScreen, navigationOptions: {title: "Setting"} }
 },
 {
   defaultNavigationOptions: ({navigation}) => ({
@@ -31,6 +33,8 @@ const App = createBottomTabNavigator({
         iconName = "bed"
       } else if (routeName === "Customer") {
         iconName = "id-card-o"
+      } else if (routeName === "Setting") {
+        iconName = "cog"
       }
 
       return <Fa name={iconName} size={25} color={tintColor} />

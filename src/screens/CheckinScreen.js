@@ -53,7 +53,7 @@ class CheckinScreen extends Component {
           </ScrollView>
         )} 
 
-        <WeDal visiblity={this.state.modalVisible} onOverlayPress={() => this._setModalVisible(!this.state.modalVisible)}>
+        <WeDal visibility={this.state.modalVisible} onOverlayPress={() => this._setModalVisible(!this.state.modalVisible)}>
           <Text style={styles.modalTitle}>{this.state.checkout === true ? 'Checkout' : 'Checkin'}</Text>
 
           <View style={styles.formGroup}>
