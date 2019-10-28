@@ -10,7 +10,7 @@ module.exports = (sequelize, DataTypes) => {
       foreignKey: "id"
     })
     room.hasMany(models.order, {
-      foreignKey: 'id'
+      foreignKey: 'room_id'
     })
   };
   return room;

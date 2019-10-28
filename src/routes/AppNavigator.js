@@ -38,6 +38,7 @@ const App = createBottomTabNavigator({
   }),
   initialRouteName: 'Room',
   tabBarOptions: {
+    keyboardHidesTabBar: true,
     inactiveTintColor: colors.sub,
     activeTintColor: colors.white,
     tabStyle: {

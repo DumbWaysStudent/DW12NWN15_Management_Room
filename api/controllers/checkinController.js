@@ -19,7 +19,10 @@ exports.index = (req, res) => {
           required: false,
           where: { 'is_done' : false }
         }
-      ]
+      ],
+      order: [
+        ['id', 'ASC']
+      ],
     }).then(data => {
       res.send(data)
     }).catch(() => {

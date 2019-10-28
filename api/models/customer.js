@@ -9,7 +9,7 @@ module.exports = (sequelize, DataTypes) => {
   customer.associate = function(models) {
     // associations can be defined here
     customer.hasMany(models.order, {
-      foreignKey: 'id'
+      foreignKey: 'customer_id'
     })
   };
   return customer;
