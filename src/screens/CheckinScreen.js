@@ -17,6 +17,7 @@ class CheckinScreen extends Component {
   constructor() {
     super()
     this.state = {
+      orderId: null,
       room: '',
       roomId: null,
       customerId: 1,
@@ -43,7 +44,7 @@ class CheckinScreen extends Component {
                 <TouchableOpacity 
                   key={item.id} 
                   style={[styles.list, item.orders.length > 0 && (item.orders[0]['is_booked'] === true && styles.booked)]} 
-                  onPress={() => this._setModalVisible(true, {id : item.id, name : item.name, isBooked : (item.orders.length > 0 && (item.orders[0]['is_booked'] === true) ? true : false)})}
+                  onPress={() => this._setModalVisible(true, {id : item.id, name : item.name, isBooked : (item.orders.length > 0 && (item.orders[0]['is_booked'] === true) ? true : false), duration: (item.orders.length > 0 ? item.orders[0].duration : 0), orderId: (item.orders.length > 0 ? item.orders[0].id : 0)})}
                   >
                   <Text style={[styles.listText, item.orders.length > 0 && styles.listTextUnbooked]}>{item.name}</Text>
                 </TouchableOpacity>
@@ -73,7 +74,7 @@ class CheckinScreen extends Component {
               {this.props.customer.isLoading === true ? (
                 <ActivityIndicator size="large" color={colors.primary} />
               ) : (
-                <Picker selectedValue={this.state.customerId} style={styles.picker} onValueChange={customerId => {
+                <Picker selectedValue={this.state.customerId} style={styles.picker} enabled={this.state.checkout === true ? false : true} onValueChange={customerId => {
                   this.setState({customerId})
                 }}>
                   {this.props.customer.data.map(item => (
@@ -86,12 +87,14 @@ class CheckinScreen extends Component {
 
           <View style={styles.formGroup}>
             <Text style={styles.lable}>Duration (Minutes)</Text>
-            <View style={styles.inputBox}>
+            <View style={[styles.inputBox, this.state.checkout && styles.inputBoxDisabled]}>
               <TextInput 
                 keyboardType="numeric"
                 placeholder="10"
+                editable={this.state.checkout === true ? false : true}
                 onChangeText={duration => this.setState({duration})}
                 style={styles.input}
+                value={this.state.duration.toString()}
               />
             </View>
           </View>
@@ -100,8 +103,8 @@ class CheckinScreen extends Component {
             <TouchableOpacity style={[styles.modalBtn, styles.btnLeft]} onPress={() => this._setModalVisible(!this.state.modalVisible)}>
               <Text style={styles.modalBtnText}>Cancel</Text>                
             </TouchableOpacity>
-            <TouchableOpacity style={[styles.modalBtn, styles.btnRight]} onPress={this._doCheckin}>
-              <Text style={styles.modalBtnText}>Save</Text>                
+            <TouchableOpacity style={[styles.modalBtn, styles.btnRight]} onPress={this.state.checkout === true ? this._doCheckout : this._doCheckin }>
+              <Text style={styles.modalBtnText}>{this.state.checkout === true ? 'Checkout' : 'Save'}</Text>                
             </TouchableOpacity>
           </View>
         </WeDal>
@@ -132,6 +135,21 @@ class CheckinScreen extends Component {
     this._setModalVisible(false)
   }
 
+  _doCheckout = async () => {
+    const id = this.state.orderId
+
+    try {
+      await Axios.put(config.host.concat(`order/${id}`), { id }, {headers: {'Authorization': `Bearer ${this.props.user.token}`}}).then(() => {
+        this._setModalVisible(!this.state.modalVisible)
+        this._getData()
+        this._showMessage('Checkout success!')
+      })
+    } catch (error) {
+      alert(error)      
+    }
+    this._setModalVisible(false)
+  }
+
   _getData = async () => {
     await this.props.dispatch(getCheckin(this.props.user.token))
     await this.props.dispatch(getCustomer(this.props.user.token))
@@ -140,9 +158,9 @@ class CheckinScreen extends Component {
   _setModalVisible = (visible, data = null) => {
     if(data !== null) {
       if(data.isBooked === true)
-        this.setState({checkout: true})
+        this.setState({checkout: true, duration: data.duration, orderId: data.orderId})
       else
-        this.setState({checkout: false})
+        this.setState({checkout: false, duration: 10})
 
       this.setState({roomId: data.id, room: data.name})
     }
