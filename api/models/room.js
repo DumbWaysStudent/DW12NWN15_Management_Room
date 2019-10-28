@@ -5,12 +5,12 @@ module.exports = (sequelize, DataTypes) => {
   }, {});
   room.associate = function(models) {
     // associations can be defined here
-    room.belongsToMany(models.customer, {
+    room.belongsTo(models.customer, {
       through: "orders",
-      foreignKey: "room_id"
-    }),
+      foreignKey: "id"
+    })
     room.hasMany(models.order, {
-      foreignKey: "room_id"
+      foreignKey: 'id'
     })
   };
   return room;

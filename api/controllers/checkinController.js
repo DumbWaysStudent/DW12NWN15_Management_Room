@@ -10,24 +10,18 @@ exports.index = (req, res) => {
       attributes: {
         exclude: ['createdAt', 'updatedAt']
       },
-      raw: true,
       include: [
         {
-          model: Customer,
-          attributes: {
-            exclude: ['createdAt', 'updatedAt', 'orders']
-          }
+          model: Customer
         },
         {
           model: Order,
-          attributes: {
-            exclude: ['createdAt', 'updatedAt']
-          },
-          where: {is_done: false}
+          required: false,
+          where: { 'is_done' : false }
         }
       ]
-    }).then(order => {
-      res.send(order)
+    }).then(data => {
+      res.send(data)
     }).catch(() => {
       res.send({message: "Gajelas anying"})
     })

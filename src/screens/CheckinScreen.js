@@ -35,8 +35,8 @@ class CheckinScreen extends Component {
         ) : (
           <ScrollView contentContainerStyle={styles.body}>
             {this.props.checkin.data.map((item) => (
-              <TouchableOpacity key={item.id} style={[styles.list, item['orders.is_booked'] === 1 ? styles.booked : styles.unBooked]} onPress={() => this._setEModalVisible(true, item.id, item.name)}>
-                <Text style={styles.listText}>{item.name}</Text>
+              <TouchableOpacity key={item.id} style={[styles.list, item.orders.length > 0 && (item.orders[0]['is_booked'] === true ? styles.booked : styles.unBooked)]} onPress={() => this._setEModalVisible(true, item.id, item.name)}>
+                <Text style={[styles.listText, item.orders.length > 0 && styles.listTextUnbooked]}>{item.name}</Text>
               </TouchableOpacity>
             ))}
           </ScrollView>
@@ -133,17 +133,22 @@ const styles = StyleSheet.create({
   body: {
     flexWrap: "wrap",
     flexDirection: 'row',
-    justifyContent: 'center',
+    justifyContent: 'space-between',
     alignItems: 'center',
     paddingVertical: 25,
     paddingHorizontal: 10
   },
 
   list: {
-    minHeight: 80,
-    minWidth: 80,
+    flex: 1,
+    minHeight: 95,
+    minWidth: 95,
+    maxHeight: 95,
+    maxWidth: 95,
+    padding: 10,
     borderWidth: 1,
-    margin: 10,
+    marginVertical: 10,
+    marginHorizontal: 5,
     borderColor: colors.primaryDarken,
     borderRadius: 4,
     justifyContent: 'center',
@@ -158,6 +163,9 @@ const styles = StyleSheet.create({
   },
   listText: {
     fontSize: 18,
+    textAlign: 'center'
+  },
+  listTextUnbooked: {
     color: colors.white
   },
 

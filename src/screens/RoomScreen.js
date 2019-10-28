@@ -156,29 +156,35 @@ class RoomScreen extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: colors.white
   },
   body: {
-    backgroundColor: colors.white,
-    flexWrap: "wrap",
+    flexWrap: 'wrap',
     flexDirection: 'row',
-    justifyContent: 'center',
+    justifyContent: 'space-between',
     alignItems: 'center',
     paddingVertical: 25,
     paddingHorizontal: 10
   },
 
   list: {
-    minHeight: 80,
-    minWidth: 80,
+    flex: 1,
+    minHeight: 95,
+    minWidth: 95,
+    maxHeight: 95,
+    maxWidth: 95,
+    padding: 10,
     borderWidth: 1,
-    margin: 10,
-    borderBottomColor: colors.primaryDarken,
+    marginVertical: 10,
+    marginHorizontal: 5,
+    borderColor: colors.primaryDarken,
     borderRadius: 4,
     justifyContent: 'center',
     alignItems: 'center'
   },
   listText: {
-    fontSize: 18
+    fontSize: 18,
+    textAlign: 'center'
   },
 
   btn: {
