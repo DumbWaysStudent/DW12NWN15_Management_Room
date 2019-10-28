@@ -5,5 +5,5 @@ export default {
   
   // normal colors
   white: "#f7f1e3",
-  black: "#000000"
+  black: "#1e272e"
 }

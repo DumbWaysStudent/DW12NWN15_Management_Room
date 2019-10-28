@@ -175,20 +175,31 @@ const styles = StyleSheet.create({
 
   list: {
     flex: 1,
+    backgroundColor: colors.white,
     minHeight: 93.2,
     minWidth: 93.2,
+    borderWidth: 1,
     maxHeight: 93.2,
     maxWidth: 93.2,
+    borderColor: colors.sub,
     padding: 10,
-    borderWidth: 1,
     margin: 10,
-    borderColor: colors.primaryDarken,
     borderRadius: 4,
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.20,
+    shadowRadius: 1.41,
+
+    elevation: 2,
   },
   listText: {
     fontSize: 18,
+    color: colors.black,
     textAlign: 'center'
   },
 
@@ -205,7 +216,15 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: colors.primary
+    backgroundColor: colors.primary,
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.20,
+    shadowRadius: 1.41,
+
+    elevation: 2,
   },
   btnText: {
     fontSize: 14,

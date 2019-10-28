@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { Modal, Image, ScrollView, ActivityIndicator, View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native'
+import Fa from 'react-native-vector-icons/FontAwesome'
 
 import { connect } from 'react-redux'
 
@@ -50,7 +51,7 @@ class CustomerScreen extends Component {
           </ScrollView>
         )}
         <TouchableOpacity style={styles.fab} onPress={() => this._setIModalVisibility(true)}>
-          <Text style={styles.fabText}>+</Text>
+          <Fa name="plus" size={22} color={colors.white} />
         </TouchableOpacity>
 
         {/* Modal input */}
@@ -234,7 +235,7 @@ const styles = StyleSheet.create({
     borderColor: colors.primary,
     justifyContent: 'center',
     alignItems: 'center',
-    flexDirection: 'row'
+    flexDirection: 'row',
   },
   profile: {
     width: 75,
@@ -252,10 +253,12 @@ const styles = StyleSheet.create({
 
   desc: {
     flex: 1,
+    color: colors.black,
     justifyContent: 'space-around'
   },
   title: {
-    fontSize: 18
+    fontSize: 18,
+    color: colors.black
   },
   fab: {
     position: 'absolute',
@@ -266,11 +269,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: 50 / 2,
     bottom: 20,
-    right: 30
-  },
-  fabText: {
-    color: colors.white,
-    fontSize: 22,
+    right: 30,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+
+    elevation: 4,
   }
 })
 
