@@ -33,15 +33,17 @@ class RoomScreen extends Component {
           </View>
         ) : (
           <ScrollView contentContainerStyle={styles.body}>
-            {this.props.room.data.map((item) => (
-              <TouchableOpacity key={item.id} style={styles.list} onPress={() => this._setEModalVisible(true, item.id, item.name)}>
-                <Text style={styles.listText}>{item.name}</Text>
+            <View style={styles.listBody}>
+              {this.props.room.data.map((item) => (
+                <TouchableOpacity key={item.id} style={styles.list} onPress={() => this._setEModalVisible(true, item.id, item.name)}>
+                  <Text style={styles.listText}>{item.name}</Text>
+                </TouchableOpacity>
+              ))}
+              <TouchableOpacity onPress={() => this._setIModalVisible(true)} style={styles.btn}>
+                <Text>+</Text>
+                <Text style={styles.btnText}>Add room</Text>
               </TouchableOpacity>
-            ))}
-            <TouchableOpacity onPress={() => this._setIModalVisible(true)} style={styles.btn}>
-              <Text>+</Text>
-              <Text style={styles.btnText}>Add room</Text>
-            </TouchableOpacity>
+            </View>
           </ScrollView>
         )} 
 
@@ -159,24 +161,26 @@ const styles = StyleSheet.create({
     backgroundColor: colors.white
   },
   body: {
-    flexWrap: 'wrap',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'center',
     alignItems: 'center',
     paddingVertical: 25,
     paddingHorizontal: 10
   },
+  listBody: {
+    flexWrap: 'wrap',
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
 
   list: {
     flex: 1,
-    minHeight: 95,
-    minWidth: 95,
-    maxHeight: 95,
-    maxWidth: 95,
+    minHeight: 93.2,
+    minWidth: 93.2,
+    maxHeight: 93.2,
+    maxWidth: 93.2,
     padding: 10,
     borderWidth: 1,
-    marginVertical: 10,
-    marginHorizontal: 5,
+    margin: 10,
     borderColor: colors.primaryDarken,
     borderRadius: 4,
     justifyContent: 'center',
@@ -188,9 +192,18 @@ const styles = StyleSheet.create({
   },
 
   btn: {
-    justifyContent: 'center',
-    alignItems: 'center',
+    flex: 1,
     flexDirection: 'column',
+    minHeight: 93.2,
+    minWidth: 93.2,
+    maxHeight: 93.2,
+    padding: 10,
+    borderWidth: 1,
+    margin: 5,
+    borderColor: colors.primaryDarken,
+    borderRadius: 4,
+    justifyContent: 'center',
+    alignItems: 'center'
   },
   btnText: {
     fontSize: 18

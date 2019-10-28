@@ -136,15 +136,15 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingVertical: 25,
-    paddingHorizontal: 10
+    paddingHorizontal: 15
   },
 
   list: {
     flex: 1,
-    minHeight: 95,
-    minWidth: 95,
-    maxHeight: 95,
-    maxWidth: 95,
+    minHeight: 93.2,
+    minWidth: 93.2,
+    maxHeight: 93.2,
+    maxWidth: 93.2,
     padding: 10,
     borderWidth: 1,
     marginVertical: 10,
