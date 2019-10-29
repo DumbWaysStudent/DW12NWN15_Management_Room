@@ -25,6 +25,7 @@ class CheckinScreen extends Component {
       checkout: false,
 
       modalVisible: false,
+      timerVisible: false
     }
   }
   
@@ -43,10 +44,11 @@ class CheckinScreen extends Component {
               {this.props.checkin.data.map((item) => (
                 <TouchableOpacity 
                   key={item.id} 
-                  style={[styles.list, item.orders.length > 0 && (item.orders[0]['is_booked'] === true && styles.booked)]} 
-                  onPress={() => this._setModalVisible(true, {id : item.id, name : item.name, isBooked : (item.orders.length > 0 && (item.orders[0]['is_booked'] === true) ? true : false), duration: (item.orders.length > 0 ? item.orders[0].duration : 0), orderId: (item.orders.length > 0 ? item.orders[0].id : 0)})}
+                  style={[styles.list, item.customers.length > 0 && (item.customers[0].orders.is_booked === true && styles.booked)]} 
+                  onPress={() => this._setModalVisible(true, {id : item.id, name : item.name, isBooked : (item.customers.length > 0 && (item.customers[0].orders.is_booked === true) ? true : false), duration: (item.customers.length > 0 ? item.customers[0].orders.duration : 0), orderId: (item.customers.length > 0 ? item.customers[0].orders.id : 0), customerId: (item.customers.length > 0 ? item.customers[0].id : 0)})}
+                  onLongPress={() => this._setTimerVisible(true, {isBooked: item.customers.length > 0 && (item.customers[0].orders.is_booked === true) ? true : false, duration: item.customers.length > 0 ? item.customers[0].orders.duration : this.state.duration})}                  
                   >
-                  <Text style={[styles.listText, item.orders.length > 0 && styles.listTextUnbooked]}>{item.name}</Text>
+                  <Text style={[styles.listText, item.customers.length > 0 && styles.listTextUnbooked]}>{item.name}</Text>
                 </TouchableOpacity>
               ))}
             </View>
@@ -109,7 +111,12 @@ class CheckinScreen extends Component {
           </View>
         </WeDal>
 
-
+        <WeDal visibility={this.state.timerVisible} onOverlayPress={() => this._setTimerVisible(!this.state.timerVisible)}>
+          <Text>Time left before checkout</Text>
+          <View>
+            <Text>{`${this.state.duration.toString()} Min(s) left`}</Text>
+          </View>
+        </WeDal>
       </View>
     )
   }
@@ -158,13 +165,24 @@ class CheckinScreen extends Component {
   _setModalVisible = (visible, data = null) => {
     if(data !== null) {
       if(data.isBooked === true)
-        this.setState({checkout: true, duration: data.duration, orderId: data.orderId})
+        this.setState({checkout: true, duration: data.duration, orderId: data.orderId, customerId: data.customerId})
       else
         this.setState({checkout: false, duration: 10})
 
       this.setState({roomId: data.id, room: data.name})
     }
     this.setState({modalVisible: visible});
+  }
+
+  _setTimerVisible = (visible, data = null) => {
+    if(data !== null)
+      if(data.isBooked === true)
+        this.setState({ duration: data.duration, checkout: true })
+      else
+        this.setState({ duration: data.duration, checkout: false })
+
+    if(this.state.checkout === true)
+      this.setState({timerVisible: visible})
   }
 
   _showMessage = (message = 'no message') => {

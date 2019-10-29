@@ -10,16 +10,14 @@ exports.index = (req, res) => {
       attributes: {
         exclude: ['createdAt', 'updatedAt']
       },
-      include: [
-        {
-          model: Customer
-        },
-        {
+      include: {
+        model: Customer,
+        through: {
           model: Order,
-          required: false,
-          where: { 'is_done' : false }
-        }
-      ],
+          where: { is_done: false }
+        },
+        required: false
+      },
       order: [
         ['id', 'ASC']
       ],

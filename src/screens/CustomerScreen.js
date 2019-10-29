@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Modal, Image, ScrollView, ActivityIndicator, View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native'
+import { ToastAndroid, Image, ScrollView, ActivityIndicator, View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native'
 import Fa from 'react-native-vector-icons/FontAwesome'
 
 import { connect } from 'react-redux'
@@ -9,17 +9,18 @@ import colors from '../assets/colors'
 import { getCustomer } from '../_redux/_actions/customer'
 import Axios from 'axios'
 import config from '../configs/config'
+import WeDal from '../components/Modal'
 
 class CustomerScreen extends Component {
   constructor() {
     super()
     this.state = {
       id: null,
-      iName: '',
-      iDentity: '',
-      iPhone: '',
-      iModalVisible: false,
-      eModalVisible: false
+      name: '',
+      identity: '',
+      phone: '',
+      modalVisible: false,
+      editMode: false
     }
   }
   
@@ -34,7 +35,7 @@ class CustomerScreen extends Component {
         ) : (
           <ScrollView contentContainerStyle={styles.body}>
             {this.props.customer.data.map((item) => (
-              <TouchableOpacity key={item.id} onPress={() => this._setEModalVisibility(true, item.id, item.name, item.identity_number, item.phone)}>
+              <TouchableOpacity key={item.id} onPress={() => this._setModalVisibility(true, {id: item.id, name: item.name, identity: item.identity_number, phone: item.phone})}>
                 <View style={styles.customerBox}>
                   <View style={styles.profile}>
                     <Image style={styles.img} source={{uri: item.image}} />
@@ -50,120 +51,66 @@ class CustomerScreen extends Component {
 
           </ScrollView>
         )}
-        <TouchableOpacity style={styles.fab} onPress={() => this._setIModalVisibility(true)}>
+        <TouchableOpacity style={styles.fab} onPress={() => this._setModalVisibility(true)}>
           <Fa name="plus" size={22} color={colors.white} />
         </TouchableOpacity>
 
-        {/* Modal input */}
-        <Modal
-          animationType="slide"
-          transparent={false}
-          visible={this.state.iModalVisible}
-        >
+        <WeDal visibility={this.state.modalVisible} onOverlayPress={() => this._setModalVisibility(!this.state.modalVisible)}>
           <View style={styles.modal}>
-            <Text>Add Customer</Text>
-            <View>
-              <Text>Name*</Text>
-              <View>
+            <Text style={styles.modalTitle}>{ this.state.editMode === true  ? 'Edit' : 'Add'} Customer</Text>
+            <View style={styles.formGroup}>
+              <Text style={styles.lable}>Name</Text>
+              <View style={styles.inputBox}>
                 <TextInput 
                   placeholder="Name"
-                  onChangeText={val => this.setState({iName: val})}
+                  style={styles.input}
+                  onChangeText={name => this.setState({name})}
+                  value={this.state.name}
                 />
               </View>
             </View>
 
-            <View>
-              <Text>Identity Number*</Text>
-              <View>
+            <View style={styles.formGroup}>
+              <Text style={styles.lable}>Identity Number</Text>
+              <View style={styles.inputBox}>
                 <TextInput 
                   placeholder="Identity number"
-                  onChangeText={val => this.setState({iDentity: val})}
+                  style={styles.input}
+                  onChangeText={identity => this.setState({identity})}
+                  value={this.state.identity}
                 />
               </View>
             </View>
 
-            <View>
-              <Text>Phone Number*</Text>
-              <View>
+            <View style={styles.formGroup}>
+              <Text style={styles.lable}>Phone Number</Text>
+              <View style={styles.inputBox}>
                 <TextInput 
                   placeholder="Phone"
-                  onChangeText={val => this.setState({iPhone: val})}
+                  style={styles.input}
+                  onChangeText={phone => this.setState({phone})}
+                  value={this.state.phone}
                 />
               </View>
             </View>
 
-            <View>
-              <Text>Phone Number*</Text>
-              <Text>*Camera Icon*</Text>
+            <View style={styles.formGroup}>
+              <Text style={styles.lable}>Camera</Text>
+              <TouchableOpacity style={{marginLeft: 10}}>
+                <Fa name="camera" size={22} />
+              </TouchableOpacity>
             </View>
 
-            <View>
-              <TouchableOpacity onPress={() => this._setIModalVisibility(!this.state.iModalVisible)}>
-                <Text>Cancel</Text>
+            <View style={styles.modalBtnGroup}>
+              <TouchableOpacity style={[styles.modalBtn, styles.btnLeft]} onPress={() => this._setModalVisibility(!this.state.modalVisible)}>
+                <Text style={styles.modalBtnText}>Cancel</Text>
               </TouchableOpacity>
-              <TouchableOpacity onPress={this._addCustomer}>
-                <Text>Save</Text>
+              <TouchableOpacity style={[styles.modalBtn, styles.btnRight]} onPress={this.state.editMode === true ? this._updateCustomer : this._addCustomer}>
+                <Text style={styles.modalBtnText}>Save</Text>
               </TouchableOpacity>
             </View>
           </View>
-        </Modal>
-
-        {/* Modal edit */}
-        <Modal
-          animationType="slide"
-          transparent={false}
-          visible={this.state.eModalVisible}
-        >
-          <View style={styles.modal}>
-            <Text>Edit Customer</Text>
-            <View>
-              <Text>Name*</Text>
-              <View>
-                <TextInput 
-                  placeholder="Name"
-                  onChangeText={val => this.setState({iName: val})}
-                  value={this.state.iName}
-                />
-              </View>
-            </View>
-
-            <View>
-              <Text>Identity Number*</Text>
-              <View>
-                <TextInput 
-                  placeholder="Identity number"
-                  onChangeText={val => this.setState({iDentity: val})}
-                  value={this.state.iDentity}
-                />
-              </View>
-            </View>
-
-            <View>
-              <Text>Phone Number*</Text>
-              <View>
-                <TextInput 
-                  placeholder="Phone"
-                  onChangeText={val => this.setState({iPhone: val})}
-                  value={this.state.iPhone}
-                />
-              </View>
-            </View>
-
-            <View>
-              <Text>Phone Number*</Text>
-              <Text>*Camera Icon*</Text>
-            </View>
-
-            <View>
-              <TouchableOpacity onPress={() => this._setEModalVisibility(!this.state.eModalVisible)}>
-                <Text>Cancel</Text>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={this._updateCustomer}>
-                <Text>Save</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </Modal>
+        </WeDal>
       </View>
     )
   }
@@ -177,13 +124,14 @@ class CustomerScreen extends Component {
   }
 
   _addCustomer = async () => {
-    const name = this.state.iName
-    const identity_number = this.state.iDentity
-    const phone = this.state.iPhone
+    const name = this.state.name
+    const identity_number = this.state.identity
+    const phone = this.state.phone
     try {
       await Axios.post(config.host.concat(`customer`), {name, identity_number, phone}, {headers: {'Authorization': `Bearer ${this.props.user.token}`}}).then(() => {
-        this._setIModalVisibility(!this.state.iModalVisible)
+        this._setModalVisibility(!this.state.modalVisible)
         this.props.dispatch(getCustomer(this.props.user.token))
+        this._showMessage('Successfully recorded!')
       })
     } catch (error) {
       alert(error)      
@@ -192,36 +140,47 @@ class CustomerScreen extends Component {
 
   _updateCustomer = async () => {
     const id = this.state.id
-    const name = this.state.iName
-    const identity_number = this.state.iDentity
-    const phone = this.state.iPhone
+    const name = this.state.name
+    const identity_number = this.state.identity
+    const phone = this.state.phone
     try {
       await Axios.put(config.host.concat(`customer/${id}`), {name, identity_number, phone}, {headers: {'Authorization': `Bearer ${this.props.user.token}`}}).then(() => {
-        this._setEModalVisibility(!this.state.eModalVisible)
+        this._setModalVisibility(!this.state.modalVisible)
         this.props.dispatch(getCustomer(this.props.user.token))
+        this._showMessage('Successfully updated!')
       })
     } catch (error) {
       alert(error)      
     }
   }
 
-  _setIModalVisibility = (visible) => {
-    this.setState({iModalVisible: visible})
+  _setModalVisibility = (visible, data = null) => {
+    if(data !== null)
+      this.setState({editMode: true, id: data.id, name: data.name, identity: data.identity, phone: data.phone})
+    else 
+      this.setState({editMode: false, id: '', name: '', identity: '', phone: ''})
+
+    this.setState({modalVisible: visible})
   }
 
-  _setEModalVisibility = (visible, id, iName, iDentity, iPhone) => {
-    this.setState({id, iName, iDentity, iPhone})
-    this.setState({eModalVisible: visible})
+  _showMessage = (message = 'no message') => {
+    ToastAndroid.showWithGravityAndOffset(
+      message,
+      ToastAndroid.LONG,
+      ToastAndroid.BOTTOM,
+      25,
+      50,
+    )
   }
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: colors.white,
   },
 
   body: {
-    backgroundColor: colors.white,
     paddingHorizontal: 10,
     paddingVertical: 15,
   },
@@ -279,7 +238,71 @@ const styles = StyleSheet.create({
     shadowRadius: 3.84,
 
     elevation: 4,
-  }
+  },
+
+  modalTitle: {
+    fontSize: 26,
+    marginBottom: 10
+  },
+  formGroup: {
+    marginVertical: 10
+  },
+  lable: {
+    marginBottom: 10
+  },
+  inputBox: {
+    backgroundColor: colors.white,
+    borderWidth: 1,
+    borderColor: colors.sub,
+    borderRadius: 4,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.18,
+    shadowRadius: 1.00,
+
+    elevation: 1,
+  },
+  input: {
+    paddingVertical: 5,
+    paddingHorizontal: 10
+  },
+  modalBtnGroup: {
+    marginVertical: 10,
+    flexDirection: 'row'
+  },
+  modalBtn: {
+    flex: 1,
+    padding: 20,
+    height: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.20,
+    shadowRadius: 1.41,
+
+    elevation: 2,
+  },
+  btnLeft: {
+    backgroundColor: colors.warning,
+    borderTopLeftRadius: 4,
+    borderBottomLeftRadius: 4,
+  },
+  btnRight: {
+    backgroundColor: colors.primary,
+    borderTopRightRadius: 4,
+    borderBottomRightRadius: 4,
+  },
+  modalBtnText: {
+    color: colors.white,
+    textTransform: 'uppercase'
+  },
 })
 
 const mapStateToProps = (state) => ({
