@@ -38,7 +38,7 @@ class CustomerScreen extends Component {
               <TouchableOpacity key={item.id} onPress={() => this._setModalVisibility(true, {id: item.id, name: item.name, identity: item.identity_number, phone: item.phone})}>
                 <View style={styles.customerBox}>
                   <View style={styles.profile}>
-                    <Image style={styles.img} source={{uri: item.image}} />
+                    <Image style={styles.img} source={item.image === '' || item.image === null ? require('../assets/images/profile.png') : {uri: item.image}} />
                   </View>
                   <View style={styles.desc}>
                     <Text style={styles.title}>{item.name}</Text>
@@ -55,7 +55,10 @@ class CustomerScreen extends Component {
           <Fa name="plus" size={22} color={colors.white} />
         </TouchableOpacity>
 
-        <WeDal visibility={this.state.modalVisible} onOverlayPress={() => this._setModalVisibility(!this.state.modalVisible)}>
+        <WeDal 
+          visibility={this.state.modalVisible} 
+          onBackButtonPress={() => this._setModalVisibility(!this.state.modalVisible)}
+          onOverlayPress={() => this._setModalVisibility(!this.state.modalVisible)}>
           <View style={styles.modal}>
             <Text style={styles.modalTitle}>{ this.state.editMode === true  ? 'Edit' : 'Add'} Customer</Text>
             <View style={styles.formGroup}>
@@ -202,7 +205,8 @@ const styles = StyleSheet.create({
     borderRadius: 75 / 2,
     marginRight: 10,
     overflow: 'hidden',
-    backgroundColor: colors.sub
+    backgroundColor: colors.sub,
+    elevation: 2,
   },
   img: {
     width: 75,

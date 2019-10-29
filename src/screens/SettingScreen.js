@@ -29,19 +29,23 @@ class SettingScreen extends Component {
             <View style={styles.title}>
               <Text style={styles.text}>{this.props.user.username}</Text>
             </View>
-            <TouchableOpacity style={styles.btn} onPress={() => this._showModal(true)}>
+            <TouchableOpacity style={styles.btn} onPress={() => this._setModalVisibility(true)}>
               <Text style={styles.btnText}>Log out</Text>
             </TouchableOpacity>
           </View>
         </View>
 
-        <WeDal visibility={this.state.modalVisible} onOverlayPress={() => this._showModal(!this.state.modalVisible)}>
+        <WeDal 
+        visibility={this.state.modalVisible}
+        onBackButtonPress={() => this._setModalVisibility(!this.state.modalVisible)}
+        onOverlayPress={() => this._setModalVisibility(!this.state.modalVisible)}>
+
           <View style={styles.modal}>
             <Fa name="sign-out" size={85} />
             <Text style={styles.modalTitle}>Are you sure want to log out?</Text>
 
             <View style={styles.modalBtnGroup}>
-              <TouchableOpacity style={[styles.modalBtn, styles.modalBtnLeft]} onPress={() => this._showModal(!this.state.modalVisible)}>
+              <TouchableOpacity style={[styles.modalBtn, styles.modalBtnLeft]} onPress={() => this._setModalVisibility(!this.state.modalVisible)}>
                 <Fa name="close" color={colors.white} size={22}  /> 
               </TouchableOpacity>
               <TouchableOpacity style={[styles.modalBtn, styles.modalBtnRight]} onPress={this._doLogout}>
@@ -55,7 +59,7 @@ class SettingScreen extends Component {
     )
   }
 
-  _showModal = async (visibility) => {
+  _setModalVisibility = async (visibility) => {
     this.setState({modalVisible: visibility})
   }
 

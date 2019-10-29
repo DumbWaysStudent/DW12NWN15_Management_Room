@@ -56,7 +56,10 @@ class CheckinScreen extends Component {
           </ScrollView>
         )} 
 
-        <WeDal visibility={this.state.modalVisible} onOverlayPress={() => this._setModalVisible(!this.state.modalVisible)}>
+        <WeDal 
+          visibility={this.state.modalVisible} 
+          onBackButtonPress={() => this._setModalVisible(!this.state.modalVisible)}
+          onOverlayPress={() => this._setModalVisible(!this.state.modalVisible)}>
           <Text style={styles.modalTitle}>{this.state.checkout === true ? 'Checkout' : 'Checkin'}</Text>
 
           <View style={styles.formGroup}>
@@ -112,27 +115,26 @@ class CheckinScreen extends Component {
           </View>
         </WeDal>
 
-        <WeDal visibility={this.state.timerVisible} onOverlayPress={() => this._setTimerVisible(!this.state.timerVisible)}>
+        <WeDal 
+          visibility={this.state.timerVisible} 
+          onOverlayPress={() => this._setTimerVisible(!this.state.timerVisible)}
+          onBackButtonPress={() => this._setTimerVisible(!this.state.timerVisible)}>
+
           <Text style={styles.durationTitle}>Time left</Text>
-          <View style={
-            {
-              flexDirection: 'row',
-              alignItems: 'center'
-            }
-          }>
+          <View style={styles.timerBody}>
             {/* <Text>{moment(this.state.endTime).diff(new Date()).minutes()}</Text> */}
-            <Text style={
-              {
-                fontSize: 18
-              }
-            }>{moment(this.state.endTime).diff(moment(new Date()), 'hours')}</Text>
-            <Text> Hour(s)</Text>
-            <Text style={
-              {
-                fontSize: 18
-              }
-            }>{moment(this.state.endTime).diff(moment(new Date()), 'minutes')}</Text>
-            <Text> Minute(s) left</Text>
+            {moment(this.state.endTime).diff(moment(new Date()), 'hours') > 0 && (
+              <View style={styles.timeContent}>
+                <Text style={styles.time}>{moment(this.state.endTime).diff(moment(new Date()), 'hours')}</Text>
+                <Text style={styles.timeLeft}>Hour(s) left</Text>
+              </View>
+            )}
+            {moment(this.state.endTime).diff(moment(new Date()), 'minutes') <= 60 && (
+              <View style={styles.timeContent}>
+                <Text style={styles.time}>{moment(this.state.endTime).diff(moment(new Date()), 'minutes')}</Text>
+                <Text style={styles.timeLeft}>Minute(s) left</Text>
+              </View>
+            )}
           </View>
         </WeDal>
       </View>
@@ -380,6 +382,19 @@ const styles = StyleSheet.create({
   durationTitle: {
     fontSize: 28,
     textAlign: 'center'
+  },
+  timerBody: {
+    marginVertical: 25
+  },
+  timeContent: {
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  time: {
+    fontSize: 28
+  },
+  timeLeft: {
+    fontSize: 14
   }
 })
 

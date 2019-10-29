@@ -5,6 +5,7 @@ import colors from '../assets/colors'
 const WeDal = (props) => (
   <Modal
     animationType="fade"
+    onRequestClose={props.onBackButtonPress}
     transparent={true}
     visible={props.visibility}
     >
