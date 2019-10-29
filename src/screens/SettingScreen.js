@@ -36,53 +36,15 @@ class SettingScreen extends Component {
         </View>
 
         <WeDal visibility={this.state.modalVisible} onOverlayPress={() => this._showModal(!this.state.modalVisible)}>
-          <View style={
-            {
-              justifyContent: 'center',
-              alignItems: 'center',
-              paddingHorizontal: 10,
-              paddingVertical: 20
-            }
-          }>
+          <View style={styles.modal}>
             <Fa name="sign-out" size={85} />
-            <Text style={
-              {
-                marginTop: 10,
-                fontSize: 16
-              }
-            }>Are you sure want to log out?</Text>
+            <Text style={styles.modalTitle}>Are you sure want to log out?</Text>
 
-            <View style={
-              {
-                flexDirection: 'row',
-                marginTop: 20
-              }
-            }>
-              <TouchableOpacity style={
-                {
-                  padding: 10,
-                  borderRadius: 4,
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  height: 50,
-                  width: 50,
-                  backgroundColor: colors.primary,
-                  marginRight: 10
-                }
-              } onPress={() => this._showModal(!this.state.modalVisible)}>
+            <View style={styles.modalBtnGroup}>
+              <TouchableOpacity style={[styles.modalBtn, styles.modalBtnLeft]} onPress={() => this._showModal(!this.state.modalVisible)}>
                 <Fa name="close" color={colors.white} size={22}  /> 
               </TouchableOpacity>
-              <TouchableOpacity style={
-                {
-                  padding: 10,
-                  borderRadius: 4,
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  height: 50,
-                  width: 50,
-                  backgroundColor: colors.danger,
-                }
-              } onPress={this._doLogout}>
+              <TouchableOpacity style={[styles.modalBtn, styles.modalBtnRight]} onPress={this._doLogout}>
                 <Fa name="check" color={colors.white} size={22} /> 
               </TouchableOpacity>
             </View>
@@ -148,6 +110,38 @@ const styles = StyleSheet.create({
     textTransform: 'uppercase',
     color: colors.white
   },
+
+  modal: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 10,
+    paddingVertical: 20
+  },
+  modalTitle: {
+    marginTop: 10,
+    fontSize: 16
+  },
+  modalBtnGroup: {
+    flexDirection: 'row',
+    marginTop: 20
+  },
+  modalBtn: {
+    marginHorizontal: 2,
+    padding: 10,
+    borderRadius: 4,
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: 40,
+    width: 40,
+  },
+  modalBtnLeft: {
+    backgroundColor: colors.primary,
+    marginRight: 5
+  },
+  modalBtnRight: {
+    backgroundColor: colors.danger,
+    marginLeft: 5
+  }
 })
 
 const mapStateToProps = (state) => ({

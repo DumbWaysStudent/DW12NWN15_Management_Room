@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { ScrollView, ToastAndroid, Picker, ActivityIndicator, View, StatusBar, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native'
 import WeDal from '../components/Modal'
-
+import moment from 'moment'
 
 import { connect } from 'react-redux'
 
@@ -22,6 +22,7 @@ class CheckinScreen extends Component {
       roomId: null,
       customerId: 1,
       duration: 10,
+      endTime: null,
       checkout: false,
 
       modalVisible: false,
@@ -45,8 +46,8 @@ class CheckinScreen extends Component {
                 <TouchableOpacity 
                   key={item.id} 
                   style={[styles.list, item.customers.length > 0 && (item.customers[0].orders.is_booked === true && styles.booked)]} 
-                  onPress={() => this._setModalVisible(true, {id : item.id, name : item.name, isBooked : (item.customers.length > 0 && (item.customers[0].orders.is_booked === true) ? true : false), duration: (item.customers.length > 0 ? item.customers[0].orders.duration : 0), orderId: (item.customers.length > 0 ? item.customers[0].orders.id : 0), customerId: (item.customers.length > 0 ? item.customers[0].id : 0)})}
-                  onLongPress={() => this._setTimerVisible(true, {isBooked: item.customers.length > 0 && (item.customers[0].orders.is_booked === true) ? true : false, duration: item.customers.length > 0 ? item.customers[0].orders.duration : this.state.duration})}                  
+                  onPress={() => this._setModalVisible(true, {id : item.id, name : item.name, isBooked : (item.customers.length > 0 && (item.customers[0].orders.is_booked === true) ? true : false), orderId: (item.customers.length > 0 ? item.customers[0].orders.id : 0), customerId: (item.customers.length > 0 ? item.customers[0].id : 0), endTime: item.customers.length > 0 ? item.customers[0].orders.order_end_time : null})}
+                  onLongPress={() => this._setTimerVisible(true, {isBooked: item.customers.length > 0 && (item.customers[0].orders.is_booked === true) ? true : false, duration: item.customers.length > 0 ? item.customers[0].orders.duration : this.state.duration, endTime: item.customers.length > 0 ? item.customers[0].orders.order_end_time : null })}                  
                   >
                   <Text style={[styles.listText, item.customers.length > 0 && styles.listTextUnbooked]}>{item.name}</Text>
                 </TouchableOpacity>
@@ -112,16 +113,33 @@ class CheckinScreen extends Component {
         </WeDal>
 
         <WeDal visibility={this.state.timerVisible} onOverlayPress={() => this._setTimerVisible(!this.state.timerVisible)}>
-          <Text>Time left before checkout</Text>
-          <View>
-            <Text>{`${this.state.duration.toString()} Min(s) left`}</Text>
+          <Text style={styles.durationTitle}>Time left</Text>
+          <View style={
+            {
+              flexDirection: 'row',
+              alignItems: 'center'
+            }
+          }>
+            {/* <Text>{moment(this.state.endTime).diff(new Date()).minutes()}</Text> */}
+            <Text style={
+              {
+                fontSize: 18
+              }
+            }>{moment(this.state.endTime).diff(moment(new Date()), 'hours')}</Text>
+            <Text> Hour(s)</Text>
+            <Text style={
+              {
+                fontSize: 18
+              }
+            }>{moment(this.state.endTime).diff(moment(new Date()), 'minutes')}</Text>
+            <Text> Minute(s) left</Text>
           </View>
         </WeDal>
       </View>
     )
   }
 
-  async componentDidMount() {
+  componentDidMount() {
     this._getData()
   }
 
@@ -157,15 +175,28 @@ class CheckinScreen extends Component {
     this._setModalVisible(false)
   }
 
+  _timedCheckout = async ( id ) => {
+    try {
+      await Axios.put(config.host.concat(`order/${id}`), { id }, {headers: {'Authorization': `Bearer ${this.props.user.token}`}}).then(() => {
+        this._getData()
+      })
+    } catch (error) {
+      alert(error)      
+    }
+  }
+
   _getData = async () => {
     await this.props.dispatch(getCheckin(this.props.user.token))
     await this.props.dispatch(getCustomer(this.props.user.token))
+    this.timer()
   }
 
   _setModalVisible = (visible, data = null) => {
     if(data !== null) {
-      if(data.isBooked === true)
-        this.setState({checkout: true, duration: data.duration, orderId: data.orderId, customerId: data.customerId})
+      if(data.isBooked === true) {
+        const duration = moment(data.endTime).diff(moment(new Date()), 'minutes')
+        this.setState({checkout: true, duration: duration, orderId: data.orderId, customerId: data.customerId})
+      }
       else
         this.setState({checkout: false, duration: 10})
 
@@ -177,7 +208,7 @@ class CheckinScreen extends Component {
   _setTimerVisible = (visible, data = null) => {
     if(data !== null)
       if(data.isBooked === true)
-        this.setState({ duration: data.duration, checkout: true })
+        this.setState({ duration: data.duration, endTime: data.endTime, checkout: true })
       else
         this.setState({ duration: data.duration, checkout: false })
 
@@ -193,6 +224,24 @@ class CheckinScreen extends Component {
       25,
       50,
     )
+  }
+
+  timer = () => {
+    if(this.props.checkin.isLoading === false) {
+      this.props.checkin.data.map((item) => {
+        if(item.customers.length > 0) {
+          const time = setInterval(() => {
+            const endTime = item.customers[0].orders.order_end_time
+            const duration = moment(endTime).diff(moment(new Date()), 'minutes')      
+            if(duration < 0) {
+              this._showMessage(`Timeout for checkout of customer ${item.customers[0].name} at room ${item.name}`)
+              this._timedCheckout(item.customers[0].orders.id)
+              clearInterval(time)
+            }
+          }, 1000)
+        }
+      })
+    }
   }
 }
 
@@ -326,6 +375,11 @@ const styles = StyleSheet.create({
   
   picker: {
     height: 40
+  },
+
+  durationTitle: {
+    fontSize: 28,
+    textAlign: 'center'
   }
 })
 
