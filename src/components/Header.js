@@ -1,6 +1,7 @@
 import React from 'react'
 import { View, Text, StyleSheet } from 'react-native' 
 import colors from '../assets/colors'
+import fonts from '../assets/fonts'
 
 const Header = (props) => (
   <View style={styles.container}>
@@ -17,6 +18,7 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   title: {
+    fontFamily: fonts.montserrat.semiBold,
     fontSize: 22,
     color: colors.white,
     textAlign: 'center',

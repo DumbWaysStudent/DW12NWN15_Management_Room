@@ -38,9 +38,9 @@ class SettingScreen extends Component {
         </View>
 
         <WeDal 
-        visibility={this.state.modalVisible}
-        onBackButtonPress={() => this._setModalVisibility(!this.state.modalVisible)}
-        onOverlayPress={() => this._setModalVisibility(!this.state.modalVisible)}>
+          visibility={this.state.modalVisible}
+          onBackButtonPress={() => this._setModalVisibility(!this.state.modalVisible)}
+          onOverlayPress={() => this._setModalVisibility(!this.state.modalVisible)}>
 
           <View style={styles.modal}>
             <Fa name="sign-out" size={85} />
@@ -161,6 +161,7 @@ const styles = StyleSheet.create({
   },
   modalTitle: {
     marginTop: 10,
+    fontFamily: fonts.montserrat.normal,
     fontSize: 16
   },
   modalBtnGroup: {

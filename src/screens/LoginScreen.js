@@ -134,7 +134,7 @@ const styles = StyleSheet.create({
     paddingVertical: 20,
   },
   formGroup: {
-    marginBottom: 10  
+    marginBottom: 15
   },
   lable: {
     marginBottom: 5,
@@ -156,7 +156,7 @@ const styles = StyleSheet.create({
   },
 
   btn: {
-    marginTop: 10,
+    marginTop: 5,
     borderRadius: 4,
     justifyContent: 'center',
     alignItems: 'center',

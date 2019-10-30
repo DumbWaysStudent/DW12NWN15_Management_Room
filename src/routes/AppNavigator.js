@@ -11,6 +11,7 @@ import CustomerScreen from '../screens/CustomerScreen'
 import CheckinScreen from '../screens/CheckinScreen'
 import SettingScreen from '../screens/SettingScreen'
 import colors from '../assets/colors'
+import fonts from '../assets/fonts'
 
 const Auth = createStackNavigator({
   Login: { screen: LoginScreen, navigationOptions: {header: null} },
@@ -47,6 +48,9 @@ const App = createBottomTabNavigator({
     activeTintColor: colors.white,
     tabStyle: {
       backgroundColor: colors.primaryDarken,
+    },
+    labelStyle: {
+      fontFamily: fonts.montserrat.normal
     },
     style: {
       backgroundColor: colors.primaryDarken,

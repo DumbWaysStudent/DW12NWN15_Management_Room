@@ -13,6 +13,7 @@ import config from '../configs/config'
 import WeDal from '../components/Modal'
 import Loading from '../components/Loading'
 import NoConnection from '../components/NoConnection'
+import fonts from '../assets/fonts'
 
 class CustomerScreen extends Component {
   constructor() {
@@ -42,9 +43,19 @@ class CustomerScreen extends Component {
                     <Image style={styles.img} source={item.image === '' || item.image === null ? require('../assets/images/profile.png') : {uri: item.image}} />
                   </View>
                   <View style={styles.desc}>
-                    <Text style={styles.title}>{item.name}</Text>
-                    <Text style={styles.sub}>{item.identity_number}</Text>
-                    <Text style={styles.sub}>{item.phone}</Text>
+                    <View style={styles.descTop}>
+                      <Text style={styles.title}>{item.name}</Text>
+                    </View>
+                    <View style={styles.descBottom}>
+                      <View style={styles.row}>
+                        <Text style={[styles.sub, {flex: 1}]}>Identity:</Text>
+                        <Text style={[styles.sub, {flex: 2}]}>{item.identity_number}</Text>
+                      </View>
+                      <View style={styles.row}>
+                        <Text style={[styles.sub, {flex: 1}]}>Phone:</Text>
+                        <Text style={[styles.sub, {flex: 2}]}>{item.phone}</Text>
+                      </View>
+                    </View>
                   </View>
                 </View>
               </TouchableOpacity>
@@ -191,40 +202,60 @@ const styles = StyleSheet.create({
     paddingVertical: 15,
   },
   customerBox: {
-    borderWidth: 2,
-    borderRadius: 4,
+    borderBottomWidth: 1,
     paddingHorizontal: 10,
-    paddingVertical: 20,
-    marginBottom: 10,
-    backgroundColor: "#ffffff",
-    borderColor: colors.primary,
+    paddingVertical: 10,
+    borderColor: colors.sub,
     justifyContent: 'center',
     alignItems: 'center',
     flexDirection: 'row',
   },
   profile: {
-    width: 75,
-    height: 75,
-    borderRadius: 75 / 2,
+    padding: 4,
+    borderRadius: 88 / 2,
     marginRight: 10,
     overflow: 'hidden',
-    backgroundColor: colors.sub,
-    elevation: 2,
+    backgroundColor: '#ffffff',
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+
+    elevation: 5,
   },
   img: {
-    width: 75,
-    height: 75,
-    borderRadius: 75 / 2
+    width: 85,
+    height: 85,
+    borderRadius: 85 / 2
   },
 
   desc: {
     flex: 1,
     color: colors.black,
-    justifyContent: 'space-around'
+    justifyContent: 'space-evenly'
+  },
+  descTop: {
+    flex: 1,
+    justifyContent: 'center'
+  },
+  descBottom: {
+    flex: 1
+  },
+  row: {
+    flexDirection: 'row'
   },
   title: {
     fontSize: 18,
-    color: colors.black
+    fontFamily: fonts.montserratAlt.semiBold,
+    color: colors.black,
+  },
+  sub: {
+    color: colors.overlay,
+    fontFamily: fonts.montserrat.normal,
+    fontSize: 14
   },
   fab: {
     position: 'absolute',
