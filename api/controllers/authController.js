@@ -7,13 +7,13 @@ exports.store = (req, res) => {
 
   try {
     User.findOne({
-      attributes: ['username'],
+      attributes: ['name', 'email', 'username', 'photo'],
       where: { username, password }
     }).then( user => {
       const token = jwt.sign({ id: user.username }, 'justdoit', { expiresIn: 604800000000 })
       res.send({
         error: false,
-        username: user.username,
+        data: user,
         token
       })
     }).catch(e => {

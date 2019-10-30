@@ -1,6 +1,7 @@
 const initialState = {
   data: [],
-  isLoading: true
+  isLoading: true,
+  error: false
 }
 
 const room = (state = initialState, action) => {
@@ -8,18 +9,28 @@ const room = (state = initialState, action) => {
     case 'GET_ROOM_PENDING':
       return {
         data: action.payload,
-        isLoading: true
+        isLoading: true,
+        error: false
       }
     case 'GET_ROOM':
       return {
         ...action.payload,
-        isLoading: true
+        isLoading: true,
+        error: false
       }
     case 'GET_ROOM_FULFILLED':
-        return {
-          data: action.payload,
-          isLoading: false
-        }
+      return {
+        data: action.payload,
+        isLoading: false,
+        error: false
+      }
+      
+    case 'GET_ROOM_REJECTED':
+      return {
+        ...action.payload,
+        isLoading: false,
+        error: true
+      }
 
     default:
       return state

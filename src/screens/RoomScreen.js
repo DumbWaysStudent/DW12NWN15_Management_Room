@@ -11,6 +11,8 @@ import { getRoom } from '../_redux/_actions/room'
 import { getCheckin } from '../_redux/_actions/checkin'
 import Axios from 'axios'
 import config from '../configs/config'
+import NoConnection from '../components/NoConnection'
+import Loading from '../components/Loading'
 
 class RoomScreen extends Component {
   constructor() {
@@ -31,10 +33,8 @@ class RoomScreen extends Component {
         <StatusBar backgroundColor={colors.primaryDarken} />
         <Header title="Room" />
         {this.props.room.isLoading === true ? (
-          <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-            <ActivityIndicator size="large" color={colors.primary} />
-          </View>
-        ) : (
+          <Loading />
+        ) : this.props.room.error === false ? (
           <ScrollView contentContainerStyle={styles.body}>
             <View style={styles.listBody}>
               {this.props.room.data.map((item) => (
@@ -48,7 +48,7 @@ class RoomScreen extends Component {
               </TouchableOpacity>
             </View>
           </ScrollView>
-        )} 
+        ) : (<NoConnection reload={this._getRooms} />)} 
 
         <WeDal 
           visibility={this.state.modalVisible} 

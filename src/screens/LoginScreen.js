@@ -35,6 +35,7 @@ class LoginScreen extends Component {
                 style={styles.input}
                 autoCapitalize="none"
                 placeholder="username"
+                editable={this.state.isLoading === true ? false : true}
                 placeholderTextColor={colors.sub}
                 onChangeText={val => this.setState({username: val})}
               />
@@ -47,6 +48,7 @@ class LoginScreen extends Component {
                 style={styles.input}
                 autoCapitalize="none"
                 placeholder="password"
+                editable={this.state.isLoading === true ? false : true}
                 placeholderTextColor={colors.sub}
                 onChangeText={val => this.setState({password: val})}
                 secureTextEntry={true}
@@ -54,7 +56,7 @@ class LoginScreen extends Component {
             </View>
           </View>
           {this.state.isLoading === true ? (
-            <ActivityIndicator size="large" color={colors.white} style={{marginTop: 10}} />
+            <ActivityIndicator size="large" color={colors.white} style={{marginTop: 25}} />
           ) : (
             <TouchableOpacity style={styles.btn} onPress={this._handleLogin}>
               <Text style={styles.btnText}>Login</Text>
@@ -137,7 +139,7 @@ const styles = StyleSheet.create({
   lable: {
     marginBottom: 5,
     fontSize: 14,
-    fontFamily: fonts.montserrat.bold,
+    fontFamily: fonts.montserrat.semiBold,
     textTransform: 'uppercase',
     color: colors.white,
   },
@@ -160,7 +162,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderWidth: 1,
     borderColor: colors.white,
-    paddingVertical: 15
+    paddingVertical: 15,
+    borderRadius: 30
   },
   btnText: {
     fontFamily: fonts.montserrat.normal,

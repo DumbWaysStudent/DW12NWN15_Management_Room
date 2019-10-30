@@ -8,6 +8,7 @@ import Header from '../components/Header'
 import colors from '../assets/colors'
 import { logout } from '../_redux/_actions/user'
 import WeDal from '../components/Modal'
+import fonts from '../assets/fonts'
 
 class SettingScreen extends Component {
   constructor() {
@@ -24,15 +25,16 @@ class SettingScreen extends Component {
         <Header title="Setting" />
         
         <View style={styles.body}>
-          <Image style={styles.img} source={{uri: 'https://steamcdn-a.akamaihd.net/steamcommunity/public/images/avatars/00/00d8f5cda3cd1279af30b1748dbc5ff295ead40c.jpg'}} />
-          <View style={styles.content}>
-            <View style={styles.title}>
-              <Text style={styles.text}>{this.props.user.username}</Text>
-            </View>
-            <TouchableOpacity style={styles.btn} onPress={() => this._setModalVisibility(true)}>
-              <Text style={styles.btnText}>Log out</Text>
-            </TouchableOpacity>
+          <View style={styles.imgFrame}>
+            <Image style={styles.img} source={this.props.user.data.photo === '' ? require('../assets/images/profile.png') : {uri: this.props.user.data.photo}} />
           </View>
+          <View style={styles.content}>
+            <Text style={styles.contentTitle}>{this.props.user.data.name}</Text>
+            <Text style={styles.contentSub}>{this.props.user.data.email}</Text>
+          </View>
+          <TouchableOpacity style={styles.btn} onPress={() => this._setModalVisibility(true)}>
+            <Text style={styles.btnText}>Log out</Text>
+          </TouchableOpacity>
         </View>
 
         <WeDal 
@@ -75,26 +77,51 @@ const styles = StyleSheet.create({
     backgroundColor: colors.white
   },
   body: {
-    flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
     paddingVertical: 25,
     paddingHorizontal: 10,
   },
-  img: {
-    width: 100, 
-    height: 100,
-    borderRadius: 50
-  },
+  imgFrame: {
+    padding: 4,
+    backgroundColor: '#ffffff',
+    borderRadius: 258 / 2,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
 
-  content: {
-    flex: 1,
-    paddingLeft: 10,
-    justifyContent: 'space-between'
+    elevation: 5,
   },
-  text: {
+  img: {
+    width: 150, 
+    height: 150,
+    borderRadius: 150 / 2
+  },
+  content: {
+    marginTop: 20,
+    alignItems: 'center'
+  },
+  contentTitle: {
+    color: colors.black,
+    fontFamily: fonts.montserratAlt.semiBold,
+    fontSize: 26,
     textTransform: 'capitalize',
-    fontSize: 22,
+    textShadowColor: '#00000022',
+    textShadowRadius: 4,
+    textShadowOffset: {
+      width: 2,
+      height: 2
+    }
+  },
+  contentSub: {
+    color: colors.overlay,
+    marginTop: 5,
+    fontFamily: fonts.montserrat.semiBold,
+    fontSize: 14,
   },
 
   title: {
@@ -102,17 +129,28 @@ const styles = StyleSheet.create({
     maxHeight: 40
   },
   btn: {
-    flex: 1,
-    maxHeight: 45,
-    borderRadius: 4,
-    backgroundColor: colors.primary,
+    marginTop: 20,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 25,
+    backgroundColor: colors.primaryDarken,
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.20,
+    shadowRadius: 1.41,
+
+    elevation: 2,
   },
   btnText: {
-    fontSize: 16,
-    textTransform: 'uppercase',
-    color: colors.white
+    color: colors.white,
+    fontFamily: fonts.montserrat.semiBold,
+    fontSize: 14,
+    textTransform: 'uppercase'
   },
 
   modal: {

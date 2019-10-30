@@ -11,6 +11,8 @@ import { getCheckin } from '../_redux/_actions/checkin'
 import Axios from 'axios'
 import config from '../configs/config'
 import WeDal from '../components/Modal'
+import Loading from '../components/Loading'
+import NoConnection from '../components/NoConnection'
 
 class CustomerScreen extends Component {
   constructor() {
@@ -30,10 +32,8 @@ class CustomerScreen extends Component {
       <View style={styles.container}>
         <Header title="Customer" />
         {this.props.customer.isLoading === true ? (
-          <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-            <ActivityIndicator size="large" color={colors.primary} />
-          </View>
-        ) : (
+          <Loading />
+        ) : this.props.customer.error === false ? (
           <ScrollView contentContainerStyle={styles.body}>
             {this.props.customer.data.map((item) => (
               <TouchableOpacity key={item.id} onPress={() => this._setModalVisibility(true, {id: item.id, name: item.name, identity: item.identity_number, phone: item.phone})}>
@@ -51,7 +51,7 @@ class CustomerScreen extends Component {
             ))}
 
           </ScrollView>
-        )}
+        ) : (<NoConnection reload={this._getCustomer} />)}
         <TouchableOpacity style={styles.fab} onPress={() => this._setModalVisibility(true)}>
           <Fa name="plus" size={22} color={colors.white} />
         </TouchableOpacity>
