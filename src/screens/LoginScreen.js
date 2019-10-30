@@ -1,11 +1,12 @@
 import React, { Component } from 'react'
-import { ActivityIndicator, View, StatusBar, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native'
+import { ActivityIndicator, ToastAndroid, Image, View, StatusBar, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native'
 import axios from 'axios'
 import { connect } from 'react-redux'
 
 import { getUser } from '../_redux/_actions/user'
 
 import colors from '../assets/colors'
+import fonts from '../assets/fonts'
 import configs from '../configs/config'
 
 class LoginScreen extends Component {
@@ -21,10 +22,9 @@ class LoginScreen extends Component {
   render() {
     return(
       <View style={styles.container}>
-        <StatusBar backgroundColor={colors.primary} barStyle="light-content" />
+        <StatusBar backgroundColor={colors.white} barStyle="dark-content" />
         <View style={styles.top}>
-          <Text style={styles.title}>WeRoom</Text>
-          <Text style={styles.sub}>Room management App</Text>
+          <Image source={require('../assets/images/logo.png')} resizeMode="contain" style={{width: 250, height: 250}} />
         </View>
 
         <View style={styles.bottom}>
@@ -35,6 +35,7 @@ class LoginScreen extends Component {
                 style={styles.input}
                 autoCapitalize="none"
                 placeholder="username"
+                placeholderTextColor={colors.sub}
                 onChangeText={val => this.setState({username: val})}
               />
             </View>
@@ -46,13 +47,14 @@ class LoginScreen extends Component {
                 style={styles.input}
                 autoCapitalize="none"
                 placeholder="password"
+                placeholderTextColor={colors.sub}
                 onChangeText={val => this.setState({password: val})}
                 secureTextEntry={true}
               />
             </View>
           </View>
           {this.state.isLoading === true ? (
-            <ActivityIndicator size="large" color={colors.primary} />
+            <ActivityIndicator size="large" color={colors.white} style={{marginTop: 10}} />
           ) : (
             <TouchableOpacity style={styles.btn} onPress={this._handleLogin}>
               <Text style={styles.btnText}>Login</Text>
@@ -67,27 +69,38 @@ class LoginScreen extends Component {
     const { username, password } = this.state
     this.setState({isLoading: true})
 
-    try {
-      axios.post(configs.host.concat('login'), {username, password})
-      .then(res => {
-        if(typeof res.data.token !== 'undefined') {
-          if(res.data.error === true) {
-            alert('Wrong username/password!')
+    if(username === '' || password === '') {
+      ToastAndroid.showWithGravityAndOffset(
+        'Username / Password cannot be empty!',
+        ToastAndroid.LONG,
+        ToastAndroid.BOTTOM,
+        25,
+        50,
+      )
+      this.setState({isLoading: false})
+    } else {
+      try {
+        axios.post(configs.host.concat('login'), {username, password})
+        .then(res => {
+          if(typeof res.data.token !== 'undefined') {
+            if(res.data.error === true) {
+              alert('Wrong username/password!')
+            } else {
+              this.props.dispatch(getUser(res.data))
+              this.props.navigation.navigate('Room')
+              this.setState({isLoading: false})
+            }
           } else {
-            this.props.dispatch(getUser(res.data))
+            alert('Wrong username/password!')
             this.setState({isLoading: false})
-            this.props.navigation.navigate('Room')
           }
-        } else {
-          alert('Wrong username/password!')
+        }).catch((error) => {
+          alert(error)
           this.setState({isLoading: false})
-        }
-      }).catch((error) => {
+        })
+      } catch (error) {
         alert(error)
-        this.setState({isLoading: false})
-      })
-    } catch (error) {
-      alert(error)
+      }
     }
   }
 }
@@ -99,43 +112,45 @@ const styles = StyleSheet.create({
   },
   top: {
     flex: 1,
+    height: '50%',
+    backgroundColor: colors.white,
     paddingHorizontal: 20,
+    borderBottomLeftRadius: 25,
+    borderBottomRightRadius: 25,
     justifyContent: 'center',
     alignItems: 'center'
   },
-  title: {
-    fontSize: 33,
-    letterSpacing: 5.6,
-    textTransform: 'uppercase',
-    color: colors.white
-  },
-  sub: {
-    fontSize: 16,
-    color: colors.sub,
-    justifyContent: 'center',
-    textAlign: 'center'
-  },
 
   bottom: {
-    minHeight: '45%',
-    backgroundColor: colors.white,
+    paddingTop: 20,
+    paddingBottom: 10,
+    paddingHorizontal: 20,
+    flex: 1,
+    height: '50%',
+    // backgroundColor: colors.white,
     justifyContent: 'center',
-    paddingHorizontal: 10,
     paddingVertical: 20,
   },
   formGroup: {
-    marginVertical: 10
+    marginBottom: 10  
   },
   lable: {
-    fontSize: 14, 
+    marginBottom: 5,
+    fontSize: 14,
+    fontFamily: fonts.montserrat.bold,
+    textTransform: 'uppercase',
+    color: colors.white,
   },
   inputBox: {
-    borderBottomWidth: 1,
-    borderBottomColor: colors.black
+    borderBottomWidth: .5,
+    borderBottomColor: colors.sub
   },
   input: {
-    paddingVertical: 10,
-    fontSize: 14,
+    fontFamily: fonts.montserrat.normal,
+    paddingVertical: 5,
+    paddingHorizontal: 0,
+    fontSize: 16,
+    color: colors.white
   },
 
   btn: {
@@ -143,11 +158,14 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: colors.primaryDarken,
+    borderWidth: 1,
+    borderColor: colors.white,
     paddingVertical: 15
   },
   btnText: {
+    fontFamily: fonts.montserrat.normal,
     fontSize: 16,
+    letterSpacing: 4,
     textTransform: 'uppercase',
     color: colors.white
   }
