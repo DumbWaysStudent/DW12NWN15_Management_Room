@@ -6,6 +6,7 @@ export default {
   sub: "#d1ccc0",
   
   // normal colors
+  pureWhite: "#ffffff",
   white: "#f7f1e3",
   black: "#1e272e",
 

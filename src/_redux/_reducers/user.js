@@ -7,7 +7,6 @@ const initialState = {
 const user = (state = initialState, action) => {
   switch (action.type) {
     case 'GET_USER': 
-      console.warn(action.payload)
       return {
         data: action.payload.data,
         token: action.payload.token,

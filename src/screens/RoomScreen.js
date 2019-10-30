@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { ScrollView, ActivityIndicator, View, StatusBar, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native'
+import { ScrollView, ToastAndroid, View, StatusBar, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native'
 import Fa from 'react-native-vector-icons/FontAwesome'
 
 import { connect } from 'react-redux'
@@ -13,6 +13,7 @@ import Axios from 'axios'
 import config from '../configs/config'
 import NoConnection from '../components/NoConnection'
 import Loading from '../components/Loading'
+import fonts from '../assets/fonts'
 
 class RoomScreen extends Component {
   constructor() {
@@ -22,7 +23,8 @@ class RoomScreen extends Component {
       name: '',
 
       modalVisible: false,
-      editMode: false
+      editMode: false,
+      btnDisabled: false
     }
   }
   
@@ -54,28 +56,25 @@ class RoomScreen extends Component {
           visibility={this.state.modalVisible} 
           onBackButtonPress={() => this._setModalVisibility(!this.state.modalVisible)}
           onOverlayPress={() => this._setModalVisibility(!this.state.modalVisible)}>
-            
-          <View style={styles.modal}>
-            <Text style={styles.modalTitle}>{this.state.editMode === true ? 'Edit' : 'Add'} Room</Text>
-            <View style={styles.formGroup}>
-              <Text style={styles.lable}>Room Name</Text>
-              <View style={styles.inputBox}>
-                <TextInput
-                  onChangeText={val => this.setState({name: val})}
-                  style={styles.input}
-                  placeholder="Room name"
-                  value={this.state.name}
-                />
-              </View>
+          <Text style={styles.modalTitle}>{this.state.editMode === true ? 'Edit' : 'Add'} Room</Text>
+          <View style={styles.formGroup}>
+            <Text style={styles.lable}>Room Name</Text>
+            <View style={styles.inputBox}>
+              <TextInput
+                onChangeText={val => this.setState({name: val})}
+                style={styles.input}
+                placeholder="Room name"
+                value={this.state.name}
+              />
+            </View>
 
-              <View style={styles.modalBtnGroup}>
-                <TouchableOpacity style={[styles.modalBtn, styles.btnLeft]} onPress={() => this._setModalVisibility(!this.state.modalVisible)}>
-                  <Text style={styles.modalBtnText}>Cancel</Text>                
-                </TouchableOpacity>
-                <TouchableOpacity style={[styles.modalBtn, styles.btnRight]} onPress={this.state.editMode ? this._editRoom : this._addRoom}>
-                  <Text style={styles.modalBtnText}>Save</Text>                
-                </TouchableOpacity>
-              </View>
+            <View style={styles.modalBtnGroup}>
+              <TouchableOpacity style={[styles.modalBtn, styles.btnLeft]} disabled={this.state.btnDisabled === true ? true : false} onPress={() => this._setModalVisibility(!this.state.modalVisible)}>
+                <Text style={styles.modalBtnText}>Cancel</Text>                
+              </TouchableOpacity>
+              <TouchableOpacity style={[styles.modalBtn, styles.btnRight]} disabled={this.state.btnDisabled === true ? true : false} onPress={this.state.editMode ? this._editRoom : this._addRoom}>
+                <Text style={styles.modalBtnText}>Save</Text>                
+              </TouchableOpacity>
             </View>
           </View>
         </WeDal>
@@ -95,10 +94,13 @@ class RoomScreen extends Component {
 
   _addRoom = async () => {
     const name = this.state.name
+    this.setState({btnDisabled: true})
     try {
       await Axios.post(config.host.concat(`room`), {name}, {headers: {'Authorization': `Bearer ${this.props.user.token}`}}).then(() => {
         this.props.dispatch(getRoom(this.props.user.token))
         this.props.dispatch(getCheckin(this.props.user.token))
+        this._showMessage('Success adding new room!')
+        this.setState({btnDisabled: false})
         this._setModalVisibility(!this.state.modalVisible)
       })
     } catch (error) {
@@ -109,10 +111,13 @@ class RoomScreen extends Component {
   _editRoom = async () => {
     const id = this.state.id
     const name = this.state.name
+    this.setState({btnDisabled: true})
     try {
       await Axios.put(config.host.concat(`room/${id}`), {name}, {headers: {'Authorization': `Bearer ${this.props.user.token}`}}).then(() => {
         this.props.dispatch(getRoom(this.props.user.token))
         this.props.dispatch(getCheckin(this.props.user.token))
+        this._showMessage('Success editing room!')
+        this.setState({btnDisabled: false})
         this._setModalVisibility(!this.state.modalVisible)
       })
     } catch (error) {
@@ -127,6 +132,16 @@ class RoomScreen extends Component {
       this.setState({editMode: false, id: null, name: ''})
     
     this.setState({modalVisible: visible})
+  }
+
+  _showMessage = (message = 'no message') => {
+    ToastAndroid.showWithGravityAndOffset(
+      message,
+      ToastAndroid.SHORT,
+      ToastAndroid.BOTTOM,
+      25,
+      50,
+    )
   }
 }
 
@@ -172,6 +187,7 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   listText: {
+    fontFamily: fonts.montserrat.normal,
     fontSize: 18,
     color: colors.black,
     textAlign: 'center'
@@ -184,7 +200,7 @@ const styles = StyleSheet.create({
     minWidth: 93.2,
     maxHeight: 93.2,
     maxWidth: 93.2,
-    padding: 10,
+    padding: 4,
     borderWidth: 1,
     margin: 5,
     borderColor: colors.primary,
@@ -202,13 +218,16 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   btnText: {
-    fontSize: 14,
+    fontFamily: fonts.montserrat.semiBold,
+    fontSize: 12,
     marginTop: 5,
+    textAlign: 'center',
     textTransform: 'uppercase',
     color: colors.white
   },
 
   modalTitle: {
+    fontFamily: fonts.montserrat.semiBold,
     fontSize: 26,
     marginBottom: 10
   },
@@ -216,24 +235,17 @@ const styles = StyleSheet.create({
     marginVertical: 10
   },
   lable: {
+    fontFamily: fonts.montserrat.normal,
     marginBottom: 10
   },
   inputBox: {
     backgroundColor: colors.white,
     borderWidth: 1,
     borderColor: colors.sub,
-    borderRadius: 4,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 1,
-    },
-    shadowOpacity: 0.18,
-    shadowRadius: 1.00,
-
-    elevation: 1,
+    borderRadius: 4
   },
   input: {
+    fontFamily: fonts.montserrat.normal,
     paddingVertical: 5,
     paddingHorizontal: 10
   },
@@ -269,6 +281,7 @@ const styles = StyleSheet.create({
     borderBottomRightRadius: 4,
   },
   modalBtnText: {
+    fontFamily: fonts.montserrat.semiBold,
     color: colors.white,
     textTransform: 'uppercase'
   },

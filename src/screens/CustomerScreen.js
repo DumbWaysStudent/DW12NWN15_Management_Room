@@ -23,8 +23,10 @@ class CustomerScreen extends Component {
       name: '',
       identity: '',
       phone: '',
+
       modalVisible: false,
-      editMode: false
+      editMode: false,
+      btnDisabled: false
     }
   }
   
@@ -71,59 +73,57 @@ class CustomerScreen extends Component {
           visibility={this.state.modalVisible} 
           onBackButtonPress={() => this._setModalVisibility(!this.state.modalVisible)}
           onOverlayPress={() => this._setModalVisibility(!this.state.modalVisible)}>
-          <View style={styles.modal}>
-            <Text style={styles.modalTitle}>{ this.state.editMode === true  ? 'Edit' : 'Add'} Customer</Text>
-            <View style={styles.formGroup}>
-              <Text style={styles.lable}>Name</Text>
-              <View style={styles.inputBox}>
-                <TextInput 
-                  placeholder="Name"
-                  style={styles.input}
-                  onChangeText={name => this.setState({name})}
-                  value={this.state.name}
-                />
-              </View>
+          <Text style={styles.modalTitle}>{ this.state.editMode === true  ? 'Edit' : 'Add'} Customer</Text>
+          <View style={styles.formGroup}>
+            <Text style={styles.lable}>Name</Text>
+            <View style={styles.inputBox}>
+              <TextInput 
+                placeholder="Name"
+                style={styles.input}
+                onChangeText={name => this.setState({name})}
+                value={this.state.name}
+              />
             </View>
+          </View>
 
-            <View style={styles.formGroup}>
-              <Text style={styles.lable}>Identity Number</Text>
-              <View style={styles.inputBox}>
-                <TextInput 
-                  placeholder="Identity number"
-                  style={styles.input}
-                  onChangeText={identity => this.setState({identity})}
-                  value={this.state.identity}
-                />
-              </View>
+          <View style={styles.formGroup}>
+            <Text style={styles.lable}>Identity Number</Text>
+            <View style={styles.inputBox}>
+              <TextInput 
+                placeholder="Identity number"
+                style={styles.input}
+                onChangeText={identity => this.setState({identity})}
+                value={this.state.identity}
+              />
             </View>
+          </View>
 
-            <View style={styles.formGroup}>
-              <Text style={styles.lable}>Phone Number</Text>
-              <View style={styles.inputBox}>
-                <TextInput 
-                  placeholder="Phone"
-                  style={styles.input}
-                  onChangeText={phone => this.setState({phone})}
-                  value={this.state.phone}
-                />
-              </View>
+          <View style={styles.formGroup}>
+            <Text style={styles.lable}>Phone Number</Text>
+            <View style={styles.inputBox}>
+              <TextInput 
+                placeholder="Phone"
+                style={styles.input}
+                onChangeText={phone => this.setState({phone})}
+                value={this.state.phone}
+              />
             </View>
+          </View>
 
-            <View style={styles.formGroup}>
-              <Text style={styles.lable}>Camera</Text>
-              <TouchableOpacity style={{marginLeft: 10}}>
-                <Fa name="camera" size={22} />
-              </TouchableOpacity>
-            </View>
+          <View style={styles.formGroup}>
+            <Text style={styles.lable}>Camera</Text>
+            <TouchableOpacity style={{marginLeft: 10}}>
+              <Fa name="camera" size={22} />
+            </TouchableOpacity>
+          </View>
 
-            <View style={styles.modalBtnGroup}>
-              <TouchableOpacity style={[styles.modalBtn, styles.btnLeft]} onPress={() => this._setModalVisibility(!this.state.modalVisible)}>
-                <Text style={styles.modalBtnText}>Cancel</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={[styles.modalBtn, styles.btnRight]} onPress={this.state.editMode === true ? this._updateCustomer : this._addCustomer}>
-                <Text style={styles.modalBtnText}>Save</Text>
-              </TouchableOpacity>
-            </View>
+          <View style={styles.modalBtnGroup}>
+            <TouchableOpacity style={[styles.modalBtn, styles.btnLeft]} disabled={this.state.btnDisabled === true ? true : false} onPress={() => this._setModalVisibility(!this.state.modalVisible)}>
+              <Text style={styles.modalBtnText}>Cancel</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={[styles.modalBtn, styles.btnRight]} disabled={this.state.btnDisabled === true ? true : false} onPress={this.state.editMode === true ? this._updateCustomer : this._addCustomer}>
+              <Text style={styles.modalBtnText}>Save</Text>
+            </TouchableOpacity>
           </View>
         </WeDal>
       </View>
@@ -142,11 +142,15 @@ class CustomerScreen extends Component {
     const name = this.state.name
     const identity_number = this.state.identity
     const phone = this.state.phone
+
+    this.setState({btnDisabled: true})
+
     try {
       await Axios.post(config.host.concat(`customer`), {name, identity_number, phone}, {headers: {'Authorization': `Bearer ${this.props.user.token}`}}).then(() => {
         this._setModalVisibility(!this.state.modalVisible)
         this.props.dispatch(getCustomer(this.props.user.token))
         this.props.dispatch(getCheckin(this.props.user.token))
+        this.setState({btnDisabled: false})
         this._showMessage('Successfully recorded!')
       })
     } catch (error) {
@@ -159,11 +163,15 @@ class CustomerScreen extends Component {
     const name = this.state.name
     const identity_number = this.state.identity
     const phone = this.state.phone
+
+    this.setState({btnDisabled: true})
+
     try {
       await Axios.put(config.host.concat(`customer/${id}`), {name, identity_number, phone}, {headers: {'Authorization': `Bearer ${this.props.user.token}`}}).then(() => {
         this._setModalVisibility(!this.state.modalVisible)
         this.props.dispatch(getCustomer(this.props.user.token))
         this.props.dispatch(getCheckin(this.props.user.token))
+        this.setState({btnDisabled: false})
         this._showMessage('Successfully updated!')
       })
     } catch (error) {
@@ -279,6 +287,7 @@ const styles = StyleSheet.create({
   },
 
   modalTitle: {
+    fontFamily: fonts.montserrat.semiBold,
     fontSize: 26,
     marginBottom: 10
   },
@@ -286,6 +295,7 @@ const styles = StyleSheet.create({
     marginVertical: 10
   },
   lable: {
+    fontFamily: fonts.montserrat.normal,
     marginBottom: 10
   },
   inputBox: {
@@ -293,17 +303,9 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.sub,
     borderRadius: 4,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 1,
-    },
-    shadowOpacity: 0.18,
-    shadowRadius: 1.00,
-
-    elevation: 1,
   },
   input: {
+    fontFamily: fonts.montserrat.normal,
     paddingVertical: 5,
     paddingHorizontal: 10
   },
@@ -338,6 +340,7 @@ const styles = StyleSheet.create({
     borderBottomRightRadius: 4,
   },
   modalBtnText: {
+    fontFamily: fonts.montserrat.semiBold,
     color: colors.white,
     textTransform: 'uppercase'
   },

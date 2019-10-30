@@ -12,6 +12,9 @@ import config from '../configs/config'
 
 import { getCheckin } from '../_redux/_actions/checkin'
 import { getCustomer } from '../_redux/_actions/customer'
+import Loading from '../components/Loading'
+import NoConnection from '../components/NoConnection'
+import fonts from '../assets/fonts'
 
 class CheckinScreen extends Component {
   constructor() {
@@ -27,7 +30,8 @@ class CheckinScreen extends Component {
 
       firstLoad: true,
       modalVisible: false,
-      timerVisible: false
+      timerVisible: false,
+      btnDisabled: false
     }
   }
   
@@ -37,10 +41,8 @@ class CheckinScreen extends Component {
         <StatusBar backgroundColor={colors.primaryDarken} />
         <Header title="Checkin" />
         {(this.props.checkin.isLoading === true) ? (
-          <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-            <ActivityIndicator size="large" color={colors.primary} />
-          </View>
-        ) : (
+          <Loading />
+        ) : this.props.checkin.error === false ? (
           <ScrollView contentContainerStyle={styles.body}>
             <View style={styles.listBody}>
               {this.props.checkin.data.map((item) => (
@@ -55,7 +57,7 @@ class CheckinScreen extends Component {
               ))}
             </View>
           </ScrollView>
-        )} 
+        ) : (<NoConnection reload={this._getData} />)} 
 
         <WeDal 
           visibility={this.state.modalVisible} 
@@ -81,9 +83,14 @@ class CheckinScreen extends Component {
               {this.props.customer.isLoading === true ? (
                 <ActivityIndicator size="large" color={colors.primary} />
               ) : (
-                <Picker selectedValue={this.state.customerId} style={styles.picker} enabled={this.state.checkout === true ? false : true} onValueChange={customerId => {
-                  this.setState({customerId})
-                }}>
+                <Picker 
+                  selectedValue={this.state.customerId} 
+                  style={styles.picker} 
+                  itemStyle={{fontFamily: fonts.montserrat.normal, fontSize: 14}}
+                  enabled={this.state.checkout === true ? false : true} 
+                  onValueChange={customerId => {
+                    this.setState({customerId})
+                  }}>
                   {this.props.customer.data.map(item => (
                     <Picker.Item key={item.id} label={`${item.name} - ${item.phone}`} value={item.id} />
                   ))}
@@ -107,10 +114,10 @@ class CheckinScreen extends Component {
           </View>
           
           <View style={styles.modalBtnGroup}>
-            <TouchableOpacity style={[styles.modalBtn, styles.btnLeft]} onPress={() => this._setModalVisible(!this.state.modalVisible)}>
+            <TouchableOpacity style={[styles.modalBtn, styles.btnLeft]} disabled={this.state.btnDisabled} onPress={() => this._setModalVisible(!this.state.modalVisible)}>
               <Text style={styles.modalBtnText}>Cancel</Text>                
             </TouchableOpacity>
-            <TouchableOpacity style={[styles.modalBtn, styles.btnRight]} onPress={this.state.checkout === true ? this._doCheckout : this._doCheckin }>
+            <TouchableOpacity style={[styles.modalBtn, styles.btnRight]} disabled={this.state.btnDisabled} onPress={this.state.checkout === true ? this._doCheckout : this._doCheckin }>
               <Text style={styles.modalBtnText}>{this.state.checkout === true ? 'Checkout' : 'Save'}</Text>                
             </TouchableOpacity>
           </View>
@@ -120,7 +127,6 @@ class CheckinScreen extends Component {
           visibility={this.state.timerVisible} 
           onOverlayPress={() => this._setTimerVisible(!this.state.timerVisible)}
           onBackButtonPress={() => this._setTimerVisible(!this.state.timerVisible)}>
-
           <Text style={styles.durationTitle}>Time left</Text>
           <View style={styles.timerBody}>
             {/* <Text>{moment(this.state.endTime).diff(new Date()).minutes()}</Text> */}
@@ -150,11 +156,13 @@ class CheckinScreen extends Component {
     const room_id = this.state.roomId
     const customer_id = this.state.customerId
     const duration = this.state.duration
+    this.setState({btnDisabled: true})
     
     try {
       await Axios.post(config.host.concat(`checkin`), {room_id, customer_id, duration}, {headers: {'Authorization': `Bearer ${this.props.user.token}`}}).then(() => {
         this._setModalVisible(!this.state.modalVisible)
         this._getData()
+        this.setState({btnDisabled: false})
         this._showMessage('Checkin success!')
       })
     } catch (error) {
@@ -165,11 +173,13 @@ class CheckinScreen extends Component {
 
   _doCheckout = async () => {
     const id = this.state.orderId
-
+    this.setState({btnDisabled: true})
+    
     try {
       await Axios.put(config.host.concat(`order/${id}`), { id }, {headers: {'Authorization': `Bearer ${this.props.user.token}`}}).then(() => {
         this._setModalVisible(!this.state.modalVisible)
         this._getData()
+        this.setState({btnDisabled: false})
         this._showMessage('Checkout success!')
       })
     } catch (error) {
@@ -275,9 +285,7 @@ const styles = StyleSheet.create({
     maxHeight: 93.2,
     maxWidth: 93.2,
     padding: 10,
-    borderWidth: 1,
     margin: 10,
-    borderColor: colors.primaryDarken,
     borderRadius: 4,
     justifyContent: 'center',
     alignItems: 'center',
@@ -297,6 +305,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.primaryDarken
   },
   listText: {
+    fontFamily: fonts.montserrat.normal,
     fontSize: 18,
     textAlign: 'center',
     color: colors.white
@@ -308,10 +317,12 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
   },
   btnText: {
+    fontFamily: fonts.montserrat.normal,
     fontSize: 18
   },
 
   modalTitle: {
+    fontFamily: fonts.montserrat.semiBold,
     fontSize: 26,
     marginBottom: 10
   },
@@ -319,6 +330,7 @@ const styles = StyleSheet.create({
     marginVertical: 10
   },
   lable: {
+    fontFamily: fonts.montserrat.normal,
     marginBottom: 10
   },
   inputBox: {
@@ -326,15 +338,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.sub,
     borderRadius: 4,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 1,
-    },
-    shadowOpacity: 0.18,
-    shadowRadius: 1.00,
-
-    elevation: 1,
   },
   inputBoxDisabled: {
     backgroundColor: colors.sub
@@ -370,20 +373,23 @@ const styles = StyleSheet.create({
     borderBottomRightRadius: 4,
   },
   modalBtnText: {
+    fontFamily: fonts.montserrat.semiBold,
     color: colors.white,
     textTransform: 'uppercase'
   },
 
   input: {
+    fontFamily: fonts.montserrat.normal,
     paddingVertical: 5,
     paddingHorizontal: 10
   },
   
   picker: {
-    height: 40
+    height: 40,
   },
 
   durationTitle: {
+    fontFamily: fonts.montserrat.semiBold,
     fontSize: 28,
     textAlign: 'center'
   },
@@ -395,9 +401,11 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   time: {
+    fontFamily: fonts.montserrat.semiBold,
     fontSize: 28
   },
   timeLeft: {
+    fontFamily: fonts.montserrat.normal,
     fontSize: 14
   }
 })
