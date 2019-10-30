@@ -25,6 +25,7 @@ class CheckinScreen extends Component {
       endTime: null,
       checkout: false,
 
+      firstLoad: true,
       modalVisible: false,
       timerVisible: false
     }
@@ -141,7 +142,7 @@ class CheckinScreen extends Component {
     )
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     this._getData()
   }
 
@@ -228,8 +229,9 @@ class CheckinScreen extends Component {
     )
   }
 
-  timer = () => {
-    if(this.props.checkin.isLoading === false) {
+  timer = async () => {
+    if(this.props.checkin.isLoading === false && this.state.firstLoad === true) {
+      this.setState({firstLoad: false})
       this.props.checkin.data.map((item) => {
         if(item.customers.length > 0) {
           const time = setInterval(() => {
@@ -243,6 +245,8 @@ class CheckinScreen extends Component {
           }, 1000)
         }
       })
+    } else if(this.props.checkin.isLoading === false) {
+      this.setState({firstLoad: true})
     }
   }
 }

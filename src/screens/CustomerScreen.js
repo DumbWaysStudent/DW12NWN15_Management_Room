@@ -7,6 +7,7 @@ import { connect } from 'react-redux'
 import Header from '../components/Header'
 import colors from '../assets/colors'
 import { getCustomer } from '../_redux/_actions/customer'
+import { getCheckin } from '../_redux/_actions/checkin'
 import Axios from 'axios'
 import config from '../configs/config'
 import WeDal from '../components/Modal'
@@ -134,6 +135,7 @@ class CustomerScreen extends Component {
       await Axios.post(config.host.concat(`customer`), {name, identity_number, phone}, {headers: {'Authorization': `Bearer ${this.props.user.token}`}}).then(() => {
         this._setModalVisibility(!this.state.modalVisible)
         this.props.dispatch(getCustomer(this.props.user.token))
+        this.props.dispatch(getCheckin(this.props.user.token))
         this._showMessage('Successfully recorded!')
       })
     } catch (error) {
@@ -150,6 +152,7 @@ class CustomerScreen extends Component {
       await Axios.put(config.host.concat(`customer/${id}`), {name, identity_number, phone}, {headers: {'Authorization': `Bearer ${this.props.user.token}`}}).then(() => {
         this._setModalVisibility(!this.state.modalVisible)
         this.props.dispatch(getCustomer(this.props.user.token))
+        this.props.dispatch(getCheckin(this.props.user.token))
         this._showMessage('Successfully updated!')
       })
     } catch (error) {

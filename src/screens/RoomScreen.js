@@ -8,6 +8,7 @@ import Header from '../components/Header'
 import WeDal from '../components/Modal'
 import colors from '../assets/colors'
 import { getRoom } from '../_redux/_actions/room'
+import { getCheckin } from '../_redux/_actions/checkin'
 import Axios from 'axios'
 import config from '../configs/config'
 
@@ -97,6 +98,7 @@ class RoomScreen extends Component {
     try {
       await Axios.post(config.host.concat(`room`), {name}, {headers: {'Authorization': `Bearer ${this.props.user.token}`}}).then(() => {
         this.props.dispatch(getRoom(this.props.user.token))
+        this.props.dispatch(getCheckin(this.props.user.token))
         this._setModalVisibility(!this.state.modalVisible)
       })
     } catch (error) {
@@ -110,6 +112,7 @@ class RoomScreen extends Component {
     try {
       await Axios.put(config.host.concat(`room/${id}`), {name}, {headers: {'Authorization': `Bearer ${this.props.user.token}`}}).then(() => {
         this.props.dispatch(getRoom(this.props.user.token))
+        this.props.dispatch(getCheckin(this.props.user.token))
         this._setModalVisibility(!this.state.modalVisible)
       })
     } catch (error) {
