@@ -13,7 +13,7 @@ const styles = StyleSheet.create({
   container: {
     height: 65,
     paddingVertical: 10,
-    backgroundColor: colors.primaryDarken,
+    backgroundColor: colors.primary,
     justifyContent: 'center',
     elevation: 2,
   },

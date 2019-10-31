@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { ToastAndroid, Image, ScrollView, ActivityIndicator, View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native'
+import { ToastAndroid, Image, ScrollView, ImageBackground, View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native'
 import Fa from 'react-native-vector-icons/FontAwesome'
 
 import { connect } from 'react-redux'
@@ -40,13 +40,19 @@ class CustomerScreen extends Component {
           <ScrollView contentContainerStyle={styles.body}>
             {this.props.customer.data.map((item) => (
               <TouchableOpacity key={item.id} onPress={() => this._setModalVisibility(true, {id: item.id, name: item.name, identity: item.identity_number, phone: item.phone})}>
-                <View style={styles.customerBox}>
+                <ImageBackground source={require('../assets/images/card.png')} imageStyle={styles.cardImg} resizeMode="cover" style={styles.customerBox}>
                   <View style={styles.profile}>
                     <Image style={styles.img} source={item.image === '' || item.image === null ? require('../assets/images/profile.png') : {uri: item.image}} />
                   </View>
                   <View style={styles.desc}>
                     <View style={styles.descTop}>
-                      <Text style={styles.title}>{item.name}</Text>
+                      <View style={
+                        {
+                          justifyContent: 'center'
+                        }
+                      }>
+                        <Text style={styles.title}>{item.name}</Text>
+                      </View>
                     </View>
                     <View style={styles.descBottom}>
                       <View style={styles.row}>
@@ -59,7 +65,7 @@ class CustomerScreen extends Component {
                       </View>
                     </View>
                   </View>
-                </View>
+                </ImageBackground>
               </TouchableOpacity>
             ))}
 
@@ -207,32 +213,47 @@ const styles = StyleSheet.create({
 
   body: {
     paddingHorizontal: 10,
-    paddingVertical: 15,
+    paddingTop: 15,
+    paddingBottom: 75,
+  },
+  cardImg: {
+    borderRadius: 4
   },
   customerBox: {
-    borderBottomWidth: 1,
+    backgroundColor: colors.pureWhite,
+    borderRadius: 4,
+    marginBottom: 20,
     paddingHorizontal: 10,
     paddingVertical: 10,
-    borderColor: colors.sub,
     justifyContent: 'center',
     alignItems: 'center',
     flexDirection: 'row',
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.20,
+    shadowRadius: 1.41,
+
+    elevation: 2,
   },
   profile: {
     padding: 4,
     borderRadius: 88 / 2,
     marginRight: 10,
     overflow: 'hidden',
-    backgroundColor: '#ffffff',
+    backgroundColor: colors.pureWhite,
     shadowColor: "#000",
     shadowOffset: {
       width: 0,
-      height: 2,
+      height: 1,
     },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
+    shadowOpacity: 0.18,
+    shadowRadius: 1.00,
 
-    elevation: 5,
+    elevation: 1,
+
   },
   img: {
     width: 85,
@@ -250,20 +271,32 @@ const styles = StyleSheet.create({
     justifyContent: 'center'
   },
   descBottom: {
-    flex: 1
+    flex: 1,
+    marginTop: 5,
+    borderRadius: 4,
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+    justifyContent: 'center'
   },
   row: {
     flexDirection: 'row'
   },
   title: {
-    fontSize: 18,
-    fontFamily: fonts.montserratAlt.semiBold,
-    color: colors.black,
+    marginBottom: 5,
+    fontSize: 20,
+    fontFamily: fonts.montserratAlt.bold,
+    color: colors.pureWhite,
+    textShadowColor: '#00000033',
+    textShadowRadius: 4,
+    textShadowOffset: {
+      width: 2,
+      height: 2
+    }
   },
   sub: {
-    color: colors.overlay,
+    color: colors.black,
     fontFamily: fonts.montserrat.normal,
-    fontSize: 14
+    fontSize: 14,
   },
   fab: {
     position: 'absolute',

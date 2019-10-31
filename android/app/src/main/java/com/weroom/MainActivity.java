@@ -1,4 +1,4 @@
-package com.weroom;
+package com.hikimo.wespace;
 
 import com.facebook.react.ReactActivity;
 

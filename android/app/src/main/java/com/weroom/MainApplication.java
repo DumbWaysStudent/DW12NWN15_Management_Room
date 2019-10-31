@@ -1,4 +1,4 @@
-package com.weroom;
+package com.hikimo.wespace;
 
 import android.app.Application;
 import android.content.Context;

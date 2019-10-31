@@ -21,7 +21,7 @@ class SettingScreen extends Component {
   render() {
     return(
       <View style={styles.container}>
-        <StatusBar backgroundColor={colors.primaryDarken} />
+        <StatusBar backgroundColor={colors.primary} />
         <Header title="Setting" />
         
         <View style={styles.body}>
@@ -84,7 +84,7 @@ const styles = StyleSheet.create({
   },
   imgFrame: {
     padding: 4,
-    backgroundColor: '#ffffff',
+    backgroundColor: colors.pureWhite,
     borderRadius: 258 / 2,
     shadowColor: "#000",
     shadowOffset: {
@@ -133,7 +133,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 25,
-    backgroundColor: colors.primaryDarken,
+    backgroundColor: colors.primary,
     justifyContent: 'center',
     alignItems: 'center',
     shadowColor: "#000",

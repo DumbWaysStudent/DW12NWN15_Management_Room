@@ -128,7 +128,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.weroom"
+        applicationId "com.hikimo.wespace"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1

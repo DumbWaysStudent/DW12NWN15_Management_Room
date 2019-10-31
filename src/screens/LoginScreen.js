@@ -89,8 +89,8 @@ class LoginScreen extends Component {
               alert('Wrong username/password!')
             } else {
               this.props.dispatch(getUser(res.data))
-              this.props.navigation.navigate('Room')
               this.setState({isLoading: false})
+              this.props.navigation.navigate('Room')
             }
           } else {
             alert('Wrong username/password!')

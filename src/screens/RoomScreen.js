@@ -32,7 +32,7 @@ class RoomScreen extends Component {
     console.log(this.props.room.data)
     return(
       <View style={styles.container}>
-        <StatusBar backgroundColor={colors.primaryDarken} />
+        <StatusBar backgroundColor={colors.primary} />
         <Header title="Room" />
         {this.props.room.isLoading === true ? (
           <Loading />

@@ -38,7 +38,7 @@ class CheckinScreen extends Component {
   render() {
     return(
       <View style={styles.container}>
-        <StatusBar backgroundColor={colors.primaryDarken} />
+        <StatusBar backgroundColor={colors.primary} />
         <Header title="Checkin" />
         {(this.props.checkin.isLoading === true) ? (
           <Loading />
@@ -302,7 +302,7 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   booked: {
-    backgroundColor: colors.primaryDarken
+    backgroundColor: colors.primary
   },
   listText: {
     fontFamily: fonts.montserrat.normal,

@@ -46,14 +46,11 @@ const App = createBottomTabNavigator({
     keyboardHidesTabBar: true,
     inactiveTintColor: colors.sub,
     activeTintColor: colors.white,
-    tabStyle: {
-      backgroundColor: colors.primaryDarken,
-    },
     labelStyle: {
       fontFamily: fonts.montserrat.normal
     },
     style: {
-      backgroundColor: colors.primaryDarken,
+      backgroundColor: colors.primary,
       elevation: 1,
       borderTopColor: 'transparent',
       height: 65,
