@@ -2,7 +2,7 @@ import React from 'react'
 import { createAppContainer, createSwitchNavigator } from 'react-navigation'
 import { createStackNavigator } from 'react-navigation-stack'
 import { createBottomTabNavigator } from 'react-navigation-tabs'
-import Fa from 'react-native-vector-icons/FontAwesome'
+import Fa from 'react-native-vector-icons/FontAwesome5'
 
 // Screens
 import LoginScreen from '../screens/LoginScreen'
@@ -31,9 +31,9 @@ const App = createBottomTabNavigator({
       if (routeName === "Checkin") {
         iconName = "check-circle"
       } else if (routeName === "Room") {
-        iconName = "bed"
+        iconName = "dungeon"
       } else if (routeName === "Customer") {
-        iconName = "id-card-o"
+        iconName = "address-card"
       } else if (routeName === "Setting") {
         iconName = "cog"
       }
